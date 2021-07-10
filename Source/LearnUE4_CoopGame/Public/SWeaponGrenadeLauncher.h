@@ -26,5 +26,5 @@ protected:
 	FName MuzzleFlashSocketName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
-	TSubclassOf<class AGrenade> GrenadeBP;
+	TSubclassOf<class ASGrenade> GrenadeBP;
 };

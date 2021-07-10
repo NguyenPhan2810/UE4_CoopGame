@@ -21,7 +21,6 @@ ASWeapon::ASWeapon()
 void ASWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame

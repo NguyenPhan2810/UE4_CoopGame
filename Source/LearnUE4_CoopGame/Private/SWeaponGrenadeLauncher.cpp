@@ -2,6 +2,7 @@
 
 
 #include "SWeaponGrenadeLauncher.h"
+#include "SGrenade.h"
 #include <Kismet/GameplayStatics.h>
 
 void ASWeaponGrenadeLauncher::Fire()
@@ -9,6 +10,10 @@ void ASWeaponGrenadeLauncher::Fire()
 	if (MuzzleEffect)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComponent, MuzzleFlashSocketName);
 
-	//if (GrenadeBP)
-		//GetWorld()->SpawnActor<AGrenade>(GrenadeBP, GetTransform());
+	if (GrenadeBP)
+	{
+		auto muzzleTransform = MeshComponent->GetSocketTransform(MuzzleFlashSocketName);
+		muzzleTransform.AddToTranslation(FVector(10, 0, 0));
+		GetWorld()->SpawnActor<ASGrenade>(GrenadeBP, muzzleTransform);
+	}
 }
