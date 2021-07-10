@@ -4,6 +4,7 @@
 #include "SGrenade.h"
 #include <Components/MeshComponent.h>
 #include <GameFramework/ProjectileMovementComponent.h>
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 ASGrenade::ASGrenade()
@@ -27,6 +28,8 @@ void ASGrenade::BeginPlay()
 	Super::BeginPlay();
 
 	SetLifeSpan(ExplosionTimer);
+
+	
 }
 
 // Called every frame
@@ -36,8 +39,14 @@ void ASGrenade::Tick(float DeltaTime)
 
 }
 
-void ASGrenade::BeginDestroy()
+void ASGrenade::Destroyed()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Some warning message"));
+	UE_LOG(LogTemp, Warning, L"damage");
+	TArray<AActor*> ignoredActor;
+
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), 20, GetActorLocation(), 1000,
+		DamageType, ignoredActor, this, GetOwner()->GetInstigatorController(),
+		true, ECollisionChannel::ECC_Visibility);
+	UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetActorLocation(), 100, 12, FLinearColor::Red, 1, 2);
 }
 

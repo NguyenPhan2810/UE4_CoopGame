@@ -14,6 +14,7 @@ void ASWeaponGrenadeLauncher::Fire()
 	{
 		auto muzzleTransform = MeshComponent->GetSocketTransform(MuzzleFlashSocketName);
 		muzzleTransform.AddToTranslation(FVector(10, 0, 0));
-		GetWorld()->SpawnActor<ASGrenade>(GrenadeBP, muzzleTransform);
+		auto theGrenade = GetWorld()->SpawnActor<ASGrenade>(GrenadeBP, muzzleTransform);
+		theGrenade->SetOwner(this);
 	}
 }
