@@ -5,6 +5,7 @@
 #include <Components/SkeletalMeshComponent.h>
 #include <DrawDebugHelpers.h>
 #include <Kismet/GameplayStatics.h>
+#include <Particles/ParticleSystemComponent.h>
 
 // Sets default values
 ASWeapon::ASWeapon()
@@ -42,26 +43,47 @@ void ASWeapon::Fire()
 		owner->GetActorEyesViewPoint(eyeLocation, eyeRotation);
 
 		FVector traceDirection = eyeRotation.Vector();
-		FVector traceEnd = eyeLocation + traceDirection * 10000;
-
+		FVector traceBegin = eyeLocation;
+		FVector traceEnd = traceBegin + traceDirection * 10000;
 		FCollisionQueryParams queryParams;
 		queryParams.AddIgnoredActor(this);
 		queryParams.AddIgnoredActor(owner);
-		//queryParams.bTraceComplex = true;
+		queryParams.bTraceComplex = true;
 
 		FHitResult hitResult;
-		if (GetWorld()->LineTraceSingleByChannel(hitResult, eyeLocation, traceEnd, ECC_Visibility, queryParams))
+		bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, traceBegin, traceEnd, ECC_Visibility, queryParams);
+
+		if (bHit)
 		{
 			// Hit something
-			DrawDebugLine(GetWorld(), hitResult.TraceStart, hitResult.TraceEnd, FColor::Green, false, 1, 0, 1);
-		
 			auto hitActor = hitResult.GetActor();
 
 			UGameplayStatics::ApplyPointDamage(hitActor, 20, traceDirection, hitResult,
 				owner->GetInstigatorController(), this, DamageType);
-		}
-		else
 
-			DrawDebugLine(GetWorld(), eyeLocation, traceEnd, FColor::Blue, false, 1, 0, 1);
+			// Impact effect
+			if (ImpactEffect)
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, hitResult.ImpactPoint, hitResult.ImpactNormal.Rotation());
+		}
+
+		// Muzzle effect
+		if (MuzzleEffect)
+			UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComponent, MuzzleFlashSocketName);
+
+		// Smoke trail effect
+		if (SmokeTrailEffect)
+		{
+			auto muzzleTrans = MeshComponent->GetSocketTransform(MuzzleFlashSocketName);
+			auto smokeTrailComp = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SmokeTrailEffect, muzzleTrans);
+			if (smokeTrailComp)
+			{
+				smokeTrailComp->SetVectorParameter(SmokeTrailStartParamName, traceBegin);
+
+				if (bHit)
+					smokeTrailComp->SetVectorParameter(SmokeTrailEndParamName, hitResult.ImpactPoint);
+				else
+					smokeTrailComp->SetVectorParameter(SmokeTrailEndParamName, traceEnd);
+			}
+		}
 	}
 }
