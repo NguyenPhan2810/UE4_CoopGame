@@ -10,11 +10,19 @@ void ASWeaponGrenadeLauncher::Fire()
 	if (MuzzleEffect)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComponent, MuzzleFlashSocketName);
 
+	// Trace the world, from muzzle to cross hair location
 	if (GrenadeBP)
 	{
-		auto muzzleTransform = MeshComponent->GetSocketTransform(MuzzleFlashSocketName);
-		muzzleTransform.AddToTranslation(FVector(10, 0, 0));
-		auto theGrenade = GetWorld()->SpawnActor<ASGrenade>(GrenadeBP, muzzleTransform);
+		auto cameraManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
+
+		auto spawnRotation = cameraManager->GetCameraRotation();
+
+		auto spawnLocation = MeshComponent->GetSocketLocation(MuzzleFlashSocketName);
+
+		FTransform spawnTransform;
+		spawnTransform.SetLocation(spawnLocation);
+		spawnTransform.SetRotation(spawnRotation.Quaternion());
+		auto theGrenade = GetWorld()->SpawnActor<ASGrenade>(GrenadeBP, spawnTransform);
 		theGrenade->SetOwner(this);
 	}
 }

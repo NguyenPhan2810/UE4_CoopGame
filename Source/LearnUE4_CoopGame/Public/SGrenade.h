@@ -19,6 +19,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void Explode();
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Components")
@@ -33,9 +34,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<UDamageType> DamageType;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	class UParticleSystem* ExplodeEffect;
+
+	FTimerHandle UnusedTimerHandle;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	virtual void Destroyed() override;
 };

@@ -5,6 +5,7 @@
 #include <Components/MeshComponent.h>
 #include <GameFramework/ProjectileMovementComponent.h>
 #include <Kismet/GameplayStatics.h>
+#include <Particles/ParticleSystemComponent.h>
 
 // Sets default values
 ASGrenade::ASGrenade()
@@ -18,8 +19,9 @@ ASGrenade::ASGrenade()
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
 
-	ProjectileMovementComponent->InitialSpeed = 500;
-	ProjectileMovementComponent->MaxSpeed = 500;
+	ProjectileMovementComponent->InitialSpeed = 1000;
+	ProjectileMovementComponent->MaxSpeed = 1000;
+	ProjectileMovementComponent->bShouldBounce = true;
 }
 
 // Called when the game starts or when spawned
@@ -27,9 +29,23 @@ void ASGrenade::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetLifeSpan(ExplosionTimer);
+	GetWorldTimerManager().SetTimer(UnusedTimerHandle, this, &ASGrenade::Explode, ExplosionTimer, false);
+}
 
-	
+void ASGrenade::Explode()
+{
+	TArray<AActor*> ignoredActor;
+	ignoredActor.Add(this);
+
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), 20, GetActorLocation(), 200,
+		DamageType, ignoredActor, this, GetOwner()->GetInstigatorController(), true, ECC_Visibility);
+	//UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetActorLocation(), 200, 12, FLinearColor::Red, 1, 2);
+
+
+	if (ExplodeEffect)
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplodeEffect, GetActorLocation(), GetActorRotation(), FVector(2, 2, 2));
+
+	Destroy();
 }
 
 // Called every frame
@@ -37,16 +53,5 @@ void ASGrenade::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
-
-void ASGrenade::Destroyed()
-{
-	UE_LOG(LogTemp, Warning, L"damage");
-	TArray<AActor*> ignoredActor;
-
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), 20, GetActorLocation(), 1000,
-		DamageType, ignoredActor, this, GetOwner()->GetInstigatorController(),
-		true, ECollisionChannel::ECC_Visibility);
-	UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetActorLocation(), 100, 12, FLinearColor::Red, 1, 2);
 }
 
