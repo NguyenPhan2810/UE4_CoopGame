@@ -9,6 +9,7 @@
 #include <Components/SkeletalMeshComponent.h>
 #include "SWeapon.h"
 #include "SWeaponRifle.h"
+#include "WeaponGrenadeLauncher.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -33,12 +34,6 @@ void ASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// Spawn Weapon
-	FActorSpawnParameters spawnParams;
-	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	weapon = GetWorld()->SpawnActor<ASWeaponRifle>(RifleBP, spawnParams);
-	weapon->SetOwner(this);
-	weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
 }
 
 // Called every frame
@@ -46,7 +41,33 @@ void ASCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Spawn Weapon
+	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::One))
+	{
+		if (weapon)
+		{
+			weapon->Destroy();
+		}
 
+		FActorSpawnParameters spawnParams;
+		spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		weapon = GetWorld()->SpawnActor<ASWeaponRifle>(RifleBP, spawnParams);
+		weapon->SetOwner(this);
+		weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
+	}
+	else if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::Two))
+	{
+		if (weapon)
+		{
+			weapon->Destroy();
+		}
+
+		FActorSpawnParameters spawnParams;
+		spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		weapon = GetWorld()->SpawnActor<AWeaponGrenadeLauncher>(GrenadeLauncherBP, spawnParams);
+		weapon->SetOwner(this);
+		weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
+	}
 }
 
 // Called to bind functionality to input
@@ -105,5 +126,8 @@ void ASCharacter::EndCrouch()
 
 void ASCharacter::Fire()
 {
-	weapon->Fire();
+	if (weapon)
+	{
+		weapon->Fire();
+	}
 }

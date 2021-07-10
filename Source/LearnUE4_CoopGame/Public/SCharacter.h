@@ -42,8 +42,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Weapon")
 	FName WeaponSocketName;
 
-	UPROPERTY(EditAnywhere, Category="Weapon")
+	UPROPERTY(EditAnywhere, Category = "Weapon")
 	TSubclassOf<class ASWeaponRifle> RifleBP;
+
+	UPROPERTY(EditAnywhere, Category = "Weapon")
+	TSubclassOf<class AWeaponGrenadeLauncher> GrenadeLauncherBP;
 
 	class ASWeapon* weapon;
 public:	
