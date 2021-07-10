@@ -41,8 +41,11 @@ void ASWeapon::Fire()
 		FVector eyeLocation;
 		FRotator eyeRotation;
 		owner->GetActorEyesViewPoint(eyeLocation, eyeRotation);
+		
+		auto cameraManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
 
-		FVector traceDirection = eyeRotation.Vector();
+
+		FVector traceDirection = cameraManager->GetCameraRotation().Vector();
 		FVector traceBegin = eyeLocation;
 		FVector traceEnd = traceBegin + traceDirection * 10000;
 		FCollisionQueryParams queryParams;
