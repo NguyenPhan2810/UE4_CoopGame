@@ -47,7 +47,7 @@ void ASWeapon::Fire()
 		FCollisionQueryParams queryParams;
 		queryParams.AddIgnoredActor(this);
 		queryParams.AddIgnoredActor(owner);
-		queryParams.bTraceComplex = true;
+		//queryParams.bTraceComplex = true;
 
 		FHitResult hitResult;
 		if (GetWorld()->LineTraceSingleByChannel(hitResult, eyeLocation, traceEnd, ECC_Visibility, queryParams))
