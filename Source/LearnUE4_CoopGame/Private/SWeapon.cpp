@@ -4,6 +4,7 @@
 #include "SWeapon.h"
 #include <Components/SkeletalMeshComponent.h>
 #include <DrawDebugHelpers.h>
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 ASWeapon::ASWeapon()
@@ -40,7 +41,8 @@ void ASWeapon::Fire()
 		FRotator eyeRotation;
 		owner->GetActorEyesViewPoint(eyeLocation, eyeRotation);
 
-		FVector traceEnd = eyeLocation + eyeRotation.Vector() * 10000;
+		FVector traceDirection = eyeRotation.Vector();
+		FVector traceEnd = eyeLocation + traceDirection * 10000;
 
 		FCollisionQueryParams queryParams;
 		queryParams.AddIgnoredActor(this);
@@ -52,9 +54,14 @@ void ASWeapon::Fire()
 		{
 			// Hit something
 			DrawDebugLine(GetWorld(), hitResult.TraceStart, hitResult.TraceEnd, FColor::Green, false, 1, 0, 1);
+		
+			auto hitActor = hitResult.GetActor();
+
+			UGameplayStatics::ApplyPointDamage(hitActor, 20, traceDirection, hitResult,
+				owner->GetInstigatorController(), this, DamageType);
 		}
 		else
 
-			DrawDebugLine(GetWorld(), eyeLocation, traceEnd, FColor::Red, false, 1, 0, 1);
+			DrawDebugLine(GetWorld(), eyeLocation, traceEnd, FColor::Blue, false, 1, 0, 1);
 	}
 }

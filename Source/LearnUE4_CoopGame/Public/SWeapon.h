@@ -24,6 +24,9 @@ protected:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	class USkeletalMeshComponent* MeshComponent;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
+	TSubclassOf<UDamageType> DamageType;
 
 public:	
 	// Called every frame
