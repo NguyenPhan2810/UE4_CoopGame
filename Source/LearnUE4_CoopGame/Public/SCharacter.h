@@ -43,9 +43,9 @@ protected:
 	FName WeaponSocketName;
 
 	UPROPERTY(EditAnywhere, Category="Weapon")
-	TSubclassOf<class ASWeapon> RifleBP;
+	TSubclassOf<class ASWeaponRifle> RifleBP;
 
-	class ASWeapon* Rifle;
+	class ASWeapon* weapon;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

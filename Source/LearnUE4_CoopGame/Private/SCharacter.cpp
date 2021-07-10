@@ -8,6 +8,7 @@
 #include <GameFramework\PawnMovementComponent.h>
 #include <Components/SkeletalMeshComponent.h>
 #include "SWeapon.h"
+#include "SWeaponRifle.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -35,9 +36,9 @@ void ASCharacter::BeginPlay()
 	// Spawn Weapon
 	FActorSpawnParameters spawnParams;
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	Rifle =  GetWorld()->SpawnActor<ASWeapon>(RifleBP, spawnParams);
-	Rifle->SetOwner(this);
-	Rifle->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
+	weapon = GetWorld()->SpawnActor<ASWeaponRifle>(RifleBP, spawnParams);
+	weapon->SetOwner(this);
+	weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
 }
 
 // Called every frame
@@ -104,5 +105,5 @@ void ASCharacter::EndCrouch()
 
 void ASCharacter::Fire()
 {
-	Rifle->Fire();
+	weapon->Fire();
 }
