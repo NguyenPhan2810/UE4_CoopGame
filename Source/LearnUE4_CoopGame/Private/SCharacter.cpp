@@ -5,11 +5,11 @@
 
 #include <Camera/CameraComponent.h>
 #include <GameFramework/SpringArmComponent.h>
-#include <GameFramework\PawnMovementComponent.h>
+#include <GameFramework/PawnMovementComponent.h>
 #include <Components/SkeletalMeshComponent.h>
 #include "SWeapon.h"
 #include "SWeaponRifle.h"
-#include "WeaponGrenadeLauncher.h"
+#include "SWeaponGrenadeLauncher.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -40,9 +40,9 @@ void ASCharacter::BeginPlay()
 void ASCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	return;
+
 	// Spawn Weapon
-	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::One))
+	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::One) && RifleBP)
 	{
 		if (weapon)
 		{
@@ -55,7 +55,7 @@ void ASCharacter::Tick(float DeltaTime)
 		weapon->SetOwner(this);
 		weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
 	}
-	else if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::Two))
+	else if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::Two) && GrenadeLauncherBP)
 	{
 		if (weapon)
 		{
@@ -64,7 +64,7 @@ void ASCharacter::Tick(float DeltaTime)
 
 		FActorSpawnParameters spawnParams;
 		spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		weapon = GetWorld()->SpawnActor<AWeaponGrenadeLauncher>(GrenadeLauncherBP, spawnParams);
+		weapon = GetWorld()->SpawnActor<ASWeaponGrenadeLauncher>(GrenadeLauncherBP, spawnParams);
 		weapon->SetOwner(this);
 		weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
 	}

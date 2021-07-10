@@ -46,7 +46,7 @@ protected:
 	TSubclassOf<class ASWeaponRifle> RifleBP;
 
 	UPROPERTY(EditAnywhere, Category = "Weapon")
-	TSubclassOf<class AWeaponGrenadeLauncher> GrenadeLauncherBP;
+	TSubclassOf<class ASWeaponGrenadeLauncher> GrenadeLauncherBP;
 
 	class ASWeapon* weapon;
 public:	

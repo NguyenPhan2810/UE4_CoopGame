@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "SWeapon.h"
-#include "WeaponGrenadeLauncher.generated.h"
+#include "SWeaponGrenadeLauncher.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LEARNUE4_COOPGAME_API AWeaponGrenadeLauncher : public ASWeapon
+class LEARNUE4_COOPGAME_API ASWeaponGrenadeLauncher : public ASWeapon
 {
 	GENERATED_BODY()
 

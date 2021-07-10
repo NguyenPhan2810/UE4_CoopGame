@@ -1,12 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "WeaponGrenadeLauncher.h"
+#include "SWeaponGrenadeLauncher.h"
 #include <Kismet/GameplayStatics.h>
 
-#include "Grenade.h"
-
-void AWeaponGrenadeLauncher::Fire()
+void ASWeaponGrenadeLauncher::Fire()
 {
 	if (MuzzleEffect)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComponent, MuzzleFlashSocketName);
