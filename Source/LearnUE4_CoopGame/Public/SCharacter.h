@@ -34,6 +34,14 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	class USpringArmComponent* SpringArmComponent;
+
+	UPROPERTY(EditAnywhere, Category="Weapon")
+	FName WeaponSocketName;
+
+	UPROPERTY(EditAnywhere, Category="Weapon")
+	TSubclassOf<class ASWeapon> RifleBP;
+
+	class ASWeapon* Rifle;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

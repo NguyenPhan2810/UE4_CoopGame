@@ -6,6 +6,8 @@
 #include <Camera/CameraComponent.h>
 #include <GameFramework/SpringArmComponent.h>
 #include <GameFramework\PawnMovementComponent.h>
+#include <Components/SkeletalMeshComponent.h>
+#include "SWeapon.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -30,6 +32,12 @@ void ASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// Spawn Weapon
+	FActorSpawnParameters spawnParams;
+	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	Rifle =  GetWorld()->SpawnActor<ASWeapon>(RifleBP, spawnParams);
+	
+	Rifle->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
 }
 
 // Called every frame
