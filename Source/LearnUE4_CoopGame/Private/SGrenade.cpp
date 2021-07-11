@@ -24,6 +24,7 @@ ASGrenade::ASGrenade()
 	ProjectileMovementComponent->InitialSpeed = 1000;
 	ProjectileMovementComponent->MaxSpeed = 1000;
 
+	ExplodeOnImpact = true;
 }
 
 // Called when the game starts or when spawned
@@ -60,6 +61,9 @@ void ASGrenade::Tick(float DeltaTime)
 
 void ASGrenade::NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {
-	//Explode();
+	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
+
+	if (ExplodeOnImpact)
+		Explode();
 }
 

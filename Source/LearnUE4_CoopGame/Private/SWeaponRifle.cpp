@@ -49,7 +49,7 @@ void ASWeaponRifle::Fire()
 			if (bHit)
 			{
 				DrawDebugLine(GetWorld(), hitResult.TraceStart, hitResult.ImpactPoint, FColor::Green, false, 1.5, 0, 1);
-				DrawDebugSphere(GetWorld(), hitResult.ImpactPoint, 8, 12, FColor::Yellow, false, 1.5, 0, 2);
+				DrawDebugSphere(GetWorld(), hitResult.ImpactPoint, 8, 8, FColor::Yellow, false, 1.5, 0, 1);
 			}
 			else
 				DrawDebugLine(GetWorld(), eyeLocation, traceEnd, FColor::Red, false, 1.5, 0, 1);

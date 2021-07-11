@@ -37,6 +37,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	class UParticleSystem* ExplodeEffect;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	bool ExplodeOnImpact;
+
 	FTimerHandle UnusedTimerHandle;
 public:	
 	// Called every frame
