@@ -38,12 +38,16 @@ protected:
 
 protected:
 	// Components
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Components)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	class UCameraComponent* CameraComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Components)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	class USpringArmComponent* SpringArmComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
+	class USHealthComponent* HealthComponent;
+
+	// Weapon Component
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	FName WeaponSocketName;
 

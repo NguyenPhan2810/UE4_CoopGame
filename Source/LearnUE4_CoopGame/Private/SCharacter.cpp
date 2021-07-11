@@ -7,9 +7,13 @@
 #include <GameFramework/SpringArmComponent.h>
 #include <GameFramework/PawnMovementComponent.h>
 #include <Components/SkeletalMeshComponent.h>
+#include <Components/CapsuleComponent.h>
+
 #include "SWeapon.h"
 #include "SWeaponRifle.h"
 #include "SWeaponGrenadeLauncher.h"
+#include "Components/SHealthComponent.h"
+#include "../LearnUE4_CoopGame.h"
 
 
 // Sets default values
@@ -21,6 +25,9 @@ ASCharacter::ASCharacter()
 	// Enable crouch
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
 
+	// Prevent capsule from blocking collision event on Weapon channel
+	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
+
 	// Setup components
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	SpringArmComponent->SetupAttachment(RootComponent);
@@ -29,6 +36,10 @@ ASCharacter::ASCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
+	HealthComponent = CreateDefaultSubobject<USHealthComponent>("HealthComponent");
+
+
+	// Setup variables
 	bAimDownSight = false;
 	AimedFov = 45;
 	DefaultFov = 70;
