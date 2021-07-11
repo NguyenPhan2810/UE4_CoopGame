@@ -13,8 +13,12 @@ UCLASS()
 class LEARNUE4_COOPGAME_API ASWeaponRifle : public ASWeapon
 {
 	GENERATED_BODY()
+
 	
 public:
+	ASWeaponRifle();
+
+
 	virtual void Fire() override;
 
 	virtual void PlayFireEffect(bool hit, FHitResult hitResult);
@@ -41,6 +45,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	FName MuzzleFlashSocketName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	float BaseDamage;
 
 	UPROPERTY(EditDefaultsOnly, Category=Camera)
 	TSubclassOf<UCameraShakeBase> FireCameraShake;

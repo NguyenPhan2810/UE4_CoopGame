@@ -8,6 +8,12 @@
 #include <PhysicalMaterials/PhysicalMaterial.h>
 #include "../LearnUE4_CoopGame.h"
 
+ASWeaponRifle::ASWeaponRifle()
+: ASWeapon()
+{
+	BaseDamage = 20;
+}
+
 void ASWeaponRifle::Fire()
 {
 	// Trace the world, from muzzle to cross hair location
@@ -31,19 +37,26 @@ void ASWeaponRifle::Fire()
 		queryParams.bReturnPhysicalMaterial = true;
 
 		FHitResult hitResult;
-		bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, traceBegin, traceEnd, ECC_Visibility, queryParams);
+		bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, traceBegin, traceEnd, COLLISION_WEAPON, queryParams);
 
 		if (bHit)
 		{
 			// Hit something
 			auto hitActor = hitResult.GetActor();
 
-			UGameplayStatics::ApplyPointDamage(hitActor, 20, traceDirection, hitResult,
+			// Query surface type
+			auto surfaceType = UPhysicalMaterial::DetermineSurfaceType(hitResult.PhysMaterial.Get());
+
+			// Increase base damage on surface vulnerable
+			float actualDamage = BaseDamage;
+			if (surfaceType == SURFACE_FLESHVULNERABLE)
+				actualDamage *= 100;
+
+			// Apply damage
+			UGameplayStatics::ApplyPointDamage(hitActor, actualDamage, traceDirection, hitResult,
 				owner->GetInstigatorController(), this, DamageType);
 
 			// Impact effect
-
-			auto surfaceType = UPhysicalMaterial::DetermineSurfaceType(hitResult.PhysMaterial.Get());
 			UParticleSystem* selectedImpactEffect = nullptr;
 			switch (surfaceType)
 			{
