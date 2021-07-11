@@ -6,6 +6,7 @@
 #include <GameFramework/ProjectileMovementComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <Particles/ParticleSystemComponent.h>
+#include "SWeapon.h"
 
 // Sets default values
 ASGrenade::ASGrenade()
@@ -18,11 +19,10 @@ ASGrenade::ASGrenade()
 	MeshComponent = CreateDefaultSubobject<UMeshComponent>("StaticMesh");
 	SetRootComponent(MeshComponent);
 
-
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
 
-	ProjectileMovementComponent->InitialSpeed = 2000;
-	ProjectileMovementComponent->MaxSpeed = 2000;
+	ProjectileMovementComponent->InitialSpeed = 1000;
+	ProjectileMovementComponent->MaxSpeed = 1000;
 
 }
 
@@ -42,7 +42,8 @@ void ASGrenade::Explode()
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), 20, GetActorLocation(), 200,
 		DamageType, ignoredActor, this, GetOwner()->GetInstigatorController(), true, ECC_Visibility);
 
-	UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetActorLocation(), 200, 12, FLinearColor::Red, 1, 1);
+	if (ASWeapon::DebugWeaponDrawing > 0)
+		UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetActorLocation(), 200, 12, FLinearColor::Red, 1, 1);
 
 
 	if (ExplodeEffect)

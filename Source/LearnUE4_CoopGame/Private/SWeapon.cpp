@@ -6,6 +6,14 @@
 #include <DrawDebugHelpers.h>
 #include <Kismet/GameplayStatics.h>
 #include <Particles/ParticleSystemComponent.h>
+#include <DrawDebugHelpers.h>
+
+int ASWeapon::DebugWeaponDrawing = 0;
+FAutoConsoleVariableRef CVARDebugWeaponDrawing(
+	L"COOP.DebugWeapons", 
+	ASWeapon::DebugWeaponDrawing, 
+	L"Draw debug for weapons",
+	ECVF_Cheat);
 
 // Sets default values
 ASWeapon::ASWeapon()

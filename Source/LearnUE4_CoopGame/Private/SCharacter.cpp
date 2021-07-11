@@ -11,6 +11,7 @@
 #include "SWeaponRifle.h"
 #include "SWeaponGrenadeLauncher.h"
 
+
 // Sets default values
 ASCharacter::ASCharacter()
 {

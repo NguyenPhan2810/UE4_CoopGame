@@ -4,6 +4,7 @@
 #include "SWeaponRifle.h"
 #include <Kismet/GameplayStatics.h>
 #include <Particles/ParticleSystemComponent.h>
+#include <DrawDebugHelpers.h>
 
 void ASWeaponRifle::Fire()
 {
@@ -40,6 +41,15 @@ void ASWeaponRifle::Fire()
 			// Impact effect
 			if (ImpactEffect)
 				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, hitResult.ImpactPoint, hitResult.ImpactNormal.Rotation());
+		}
+
+		// Draw debug
+		if (DebugWeaponDrawing > 0)
+		{
+			if (bHit)
+				DrawDebugLine(GetWorld(), hitResult.TraceStart, hitResult.TraceEnd, FColor::Green, false, 1, 0, 1);
+			else
+				DrawDebugLine(GetWorld(), eyeLocation, traceEnd, FColor::Red, false, 1, 0, 1);
 		}
 
 		// Muzzle effect

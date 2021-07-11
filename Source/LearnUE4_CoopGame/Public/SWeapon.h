@@ -28,6 +28,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
 	TSubclassOf<UDamageType> DamageType;
 
+
+public:
+	// Console variable for debugging
+	// value = 0 means disable and > 0 means enable
+	static int DebugWeaponDrawing;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
