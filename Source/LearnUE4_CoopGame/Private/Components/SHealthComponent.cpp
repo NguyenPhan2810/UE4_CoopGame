@@ -37,5 +37,8 @@ void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 	// Update health clamped
 	Health = FMath::Clamp(Health - Damage, 0.0f, DefaultMaxHealth);
 
+	// Board cast event
+	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);
+
 	UE_LOG(LogTemp, Log, TEXT("Health changed: %f"), Health);
 }
