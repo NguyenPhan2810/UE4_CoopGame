@@ -16,13 +16,20 @@ public:
 	ASWeapon();
 
 	// Fire a single shot
+	UFUNCTION(BlueprintCallable, Category = Weapon)
 	virtual void Fire();
 
-	// Automatic fire
+	// Automatic 
+	UFUNCTION(BlueprintCallable, Category = Weapon)
 	virtual void BeginFire();
+
+	UFUNCTION(BlueprintCallable, Category = Weapon)
 	virtual void EndFire();
 
 protected:
+
+	UFUNCTION(BlueprintImplementableEvent, Category = Weapon)
+	void BlueprintFireEvent();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components)

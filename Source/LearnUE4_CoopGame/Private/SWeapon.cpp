@@ -29,6 +29,8 @@ ASWeapon::ASWeapon()
 void ASWeapon::Fire()
 {
 	lastFireTime = GetWorld()->TimeSeconds;
+
+	BlueprintFireEvent();
 }
 
 void ASWeapon::BeginFire()
