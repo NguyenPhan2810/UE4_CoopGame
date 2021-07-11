@@ -19,12 +19,12 @@ public:
 
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	UParticleSystem* MuzzleEffect;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	FName MuzzleFlashSocketName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	TSubclassOf<class ASGrenade> GrenadeBP;
 };

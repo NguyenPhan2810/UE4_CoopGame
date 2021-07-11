@@ -37,19 +37,19 @@ protected:
 
 protected:
 	// Components
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Components)
 	class UCameraComponent* CameraComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Components)
 	class USpringArmComponent* SpringArmComponent;
 
-	UPROPERTY(EditAnywhere, Category="Weapon")
+	UPROPERTY(EditAnywhere, Category = Weapon)
 	FName WeaponSocketName;
 
-	UPROPERTY(EditAnywhere, Category = "Weapon")
+	UPROPERTY(EditAnywhere, Category = Weapon)
 	TSubclassOf<class ASWeaponRifle> RifleBP;
 
-	UPROPERTY(EditAnywhere, Category = "Weapon")
+	UPROPERTY(EditAnywhere, Category = Weapon)
 	TSubclassOf<class ASWeaponGrenadeLauncher> GrenadeLauncherBP;
 
 	class ASWeapon* weapon;
@@ -57,13 +57,13 @@ protected:
 	bool bAimDownSight;
 	float CurrentFov;
 
-	UPROPERTY(EditAnywhere, Category="Player", meta = (ClampMin = 0.1, ClampMax = 100))
+	UPROPERTY(EditAnywhere, Category = Player, meta = (ClampMin = 0.1, ClampMax = 100))
 	float AdsInterpSpeed;
 
-	UPROPERTY(EditAnywhere, Category="Player", meta = (ClampMin = 0.1, ClampMax = 360))
+	UPROPERTY(EditAnywhere, Category = Player, meta = (ClampMin = 0.1, ClampMax = 360))
 	float AimedFov;
 
-	UPROPERTY(EditAnywhere, Category = "Player", meta = (ClampMin = 0.1, ClampMax = 360))
+	UPROPERTY(EditAnywhere, Category = Player, meta = (ClampMin = 0.1, ClampMax = 360))
 	float DefaultFov;
 
 public:	

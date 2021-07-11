@@ -20,10 +20,10 @@ public:
 protected:
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Components")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components)
 	class USkeletalMeshComponent* MeshComponent;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	TSubclassOf<UDamageType> DamageType;
 
 

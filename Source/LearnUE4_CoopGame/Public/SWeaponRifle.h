@@ -21,21 +21,24 @@ public:
 
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	UParticleSystem* ImpactEffect;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	UParticleSystem* SmokeTrailEffect;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	FName SmokeTrailStartParamName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	FName SmokeTrailEndParamName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	UParticleSystem* MuzzleEffect;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	FName MuzzleFlashSocketName;
+
+	UPROPERTY(EditAnywhere, Category=Camera)
+	TSubclassOf<class UCameraShakeBase> CameraShake;
 };

@@ -22,22 +22,22 @@ protected:
 	void Explode();
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Components")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components)
 	class UMeshComponent* MeshComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components)
 	class UProjectileMovementComponent* ProjectileMovementComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	float ExplosionTimer;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	TSubclassOf<UDamageType> DamageType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	class UParticleSystem* ExplodeEffect;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	bool ExplodeOnImpact;
 
 	FTimerHandle UnusedTimerHandle;

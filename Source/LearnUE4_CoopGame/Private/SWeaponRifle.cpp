@@ -81,4 +81,15 @@ void ASWeaponRifle::PlayFireEffect(bool hit, FHitResult hitResult)
 				smokeTrailComp->SetVectorParameter(SmokeTrailEndParamName,  hitResult.TraceEnd);
 		}
 	}
+
+	// Camera shake
+	auto player = Cast<APawn>(GetOwner());
+	if (player)
+	{
+		auto controller = Cast<APlayerController>(player->GetController());
+		if (controller)
+		{
+			controller->ClientPlayCameraShake(CameraShake);
+		}
+	}
 }
