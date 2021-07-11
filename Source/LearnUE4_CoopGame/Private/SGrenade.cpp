@@ -16,12 +16,14 @@ ASGrenade::ASGrenade()
 	ExplosionTimer = 1; // second
 
 	MeshComponent = CreateDefaultSubobject<UMeshComponent>("StaticMesh");
+	SetRootComponent(MeshComponent);
+
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
 
-	ProjectileMovementComponent->InitialSpeed = 1000;
-	ProjectileMovementComponent->MaxSpeed = 1000;
-	ProjectileMovementComponent->bShouldBounce = true;
+	ProjectileMovementComponent->InitialSpeed = 2000;
+	ProjectileMovementComponent->MaxSpeed = 2000;
+
 }
 
 // Called when the game starts or when spawned
@@ -39,7 +41,8 @@ void ASGrenade::Explode()
 
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), 20, GetActorLocation(), 200,
 		DamageType, ignoredActor, this, GetOwner()->GetInstigatorController(), true, ECC_Visibility);
-	//UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetActorLocation(), 200, 12, FLinearColor::Red, 1, 2);
+
+	UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetActorLocation(), 200, 12, FLinearColor::Red, 1, 1);
 
 
 	if (ExplodeEffect)
@@ -53,5 +56,10 @@ void ASGrenade::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ASGrenade::NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+{
+	//Explode();
 }
 
