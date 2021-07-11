@@ -36,6 +36,10 @@ protected:
 	void BeginAimDownSight();
 	void EndAimDownSight();
 
+
+	UFUNCTION()
+	void OnHealthChanged(USHealthComponent* HealthComponentDamaged, float CurrentHealth, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+
 protected:
 	// Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
@@ -56,11 +60,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	TSubclassOf<class ASWeaponGrenadeLauncher> GrenadeLauncherBP;
-
+	
+protected:
 	class ASWeapon* weapon;
-
-	bool bAimDownSight;
-	float CurrentFov;
 
 	UPROPERTY(EditAnywhere, Category = Player, meta = (ClampMin = 0.1, ClampMax = 100))
 	float AdsInterpSpeed;
@@ -70,6 +72,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Player, meta = (ClampMin = 0.1, ClampMax = 360))
 	float DefaultFov;
+
+	bool bAimDownSight;
+	float CurrentFov;
+
+	UPROPERTY(BlueprintReadOnly, Category = Player)
+	bool bDied;
 
 public:	
 	// Called every frame

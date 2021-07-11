@@ -12,7 +12,7 @@
 #include "SWeapon.h"
 #include "SWeaponRifle.h"
 #include "SWeaponGrenadeLauncher.h"
-#include "Components/SHealthComponent.h"
+#include "Components/SHealthComponent.h"	
 #include "../LearnUE4_CoopGame.h"
 
 
@@ -44,6 +44,8 @@ ASCharacter::ASCharacter()
 	AimedFov = 45;
 	DefaultFov = 70;
 	AdsInterpSpeed = 25;
+	bDied = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -53,6 +55,9 @@ void ASCharacter::BeginPlay()
 	
 	CurrentFov = DefaultFov;
 	CameraComponent->SetFieldOfView(CurrentFov);
+
+	// Register event of health change
+	HealthComponent->OnHealthChanged.AddDynamic(this, &ASCharacter::OnHealthChanged);
 }
 
 // Called every frame
@@ -180,4 +185,16 @@ void ASCharacter::BeginAimDownSight()
 void ASCharacter::EndAimDownSight()
 {
 	bAimDownSight = false;
+}
+
+void ASCharacter::OnHealthChanged(USHealthComponent* HealthComponentDamaged, float CurrentHealth, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
+{
+	if (CurrentHealth <= 0 && !bDied)
+	{
+		// Die
+		bDied = true;
+
+		GetMovementComponent()->StopMovementImmediately();
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }
