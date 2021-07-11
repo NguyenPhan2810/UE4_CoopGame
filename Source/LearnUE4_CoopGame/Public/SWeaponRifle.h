@@ -22,7 +22,10 @@ public:
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
-	UParticleSystem* ImpactEffect;
+	UParticleSystem* ImpactEffectDefault;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	UParticleSystem* ImpactEffectVulnerable;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	UParticleSystem* SmokeTrailEffect;
@@ -40,5 +43,5 @@ protected:
 	FName MuzzleFlashSocketName;
 
 	UPROPERTY(EditDefaultsOnly, Category=Camera)
-	TSubclassOf<UCameraShakeBase> CameraShake;
+	TSubclassOf<UCameraShakeBase> FireCameraShake;
 };

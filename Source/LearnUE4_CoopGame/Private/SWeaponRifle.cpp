@@ -5,6 +5,8 @@
 #include <Kismet/GameplayStatics.h>
 #include <Particles/ParticleSystemComponent.h>
 #include <DrawDebugHelpers.h>
+#include <PhysicalMaterials/PhysicalMaterial.h>
+#include "../LearnUE4_CoopGame.h"
 
 void ASWeaponRifle::Fire()
 {
@@ -26,6 +28,7 @@ void ASWeaponRifle::Fire()
 		queryParams.AddIgnoredActor(this);
 		queryParams.AddIgnoredActor(owner);
 		queryParams.bTraceComplex = true;
+		queryParams.bReturnPhysicalMaterial = true;
 
 		FHitResult hitResult;
 		bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, traceBegin, traceEnd, ECC_Visibility, queryParams);
@@ -39,8 +42,22 @@ void ASWeaponRifle::Fire()
 				owner->GetInstigatorController(), this, DamageType);
 
 			// Impact effect
-			if (ImpactEffect)
-				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, hitResult.ImpactPoint, hitResult.ImpactNormal.Rotation());
+
+			auto surfaceType = UPhysicalMaterial::DetermineSurfaceType(hitResult.PhysMaterial.Get());
+			UParticleSystem* selectedImpactEffect = nullptr;
+			switch (surfaceType)
+			{
+			case SURFACE_FLESHDEFAULT:
+			case SURFACE_FLESHVULNERABLE:
+				selectedImpactEffect = ImpactEffectVulnerable; 
+				break;
+			default: 
+				selectedImpactEffect = ImpactEffectDefault; 
+				break;
+			}
+
+			if (selectedImpactEffect)
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), selectedImpactEffect, hitResult.ImpactPoint, hitResult.ImpactNormal.Rotation());
 		}
 
 		// Draw debug
@@ -52,7 +69,7 @@ void ASWeaponRifle::Fire()
 				DrawDebugSphere(GetWorld(), hitResult.ImpactPoint, 8, 8, FColor::Yellow, false, 1.5, 0, 1);
 			}
 			else
-				DrawDebugLine(GetWorld(), eyeLocation, traceEnd, FColor::Red, false, 1.5, 0, 1);
+				DrawDebugLine(GetWorld(), hitResult.TraceStart, hitResult.TraceEnd, FColor::Red, false, 1.5, 0, 1);
 		}
 
 		PlayFireEffect(bHit, hitResult);
@@ -89,7 +106,7 @@ void ASWeaponRifle::PlayFireEffect(bool hit, FHitResult hitResult)
 		auto controller = Cast<APlayerController>(player->GetController());
 		if (controller)
 		{
-			controller->ClientPlayCameraShake(CameraShake);
+			controller->ClientPlayCameraShake(FireCameraShake);
 		}
 	}
 }
