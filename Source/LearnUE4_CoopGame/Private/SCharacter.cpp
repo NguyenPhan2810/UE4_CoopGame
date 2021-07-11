@@ -27,6 +27,11 @@ ASCharacter::ASCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	bAimDownSight = false;
+	AimedFov = 45;
+	DefaultFov = 70;
+	AdsInterpSpeed = 25;
 }
 
 // Called when the game starts or when spawned
@@ -34,6 +39,8 @@ void ASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	CurrentFov = DefaultFov;
+	CameraComponent->SetFieldOfView(CurrentFov);
 }
 
 // Called every frame
@@ -68,6 +75,14 @@ void ASCharacter::Tick(float DeltaTime)
 		weapon->SetOwner(this);
 		weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
 	}
+
+	// Aim down sight
+
+	float targetFov = bAimDownSight ? AimedFov : DefaultFov;
+	
+	CurrentFov = FMath::FInterpTo(CurrentFov, targetFov, DeltaTime, AdsInterpSpeed);
+
+	CameraComponent->SetFieldOfView(CurrentFov);
 }
 
 // Called to bind functionality to input
@@ -92,6 +107,10 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	// Fire
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ASCharacter::Fire);
+
+	// Aim down sight
+	PlayerInputComponent->BindAction("AimDownSight", IE_Pressed, this, &ASCharacter::BeginAimDownSight);
+	PlayerInputComponent->BindAction("AimDownSight", IE_Released, this, &ASCharacter::EndAimDownSight);
 }
 
 FVector ASCharacter::GetPawnViewLocation() const
@@ -130,4 +149,14 @@ void ASCharacter::Fire()
 	{
 		weapon->Fire();
 	}
+}
+
+void ASCharacter::BeginAimDownSight()
+{
+	bAimDownSight = true;
+}
+
+void ASCharacter::EndAimDownSight()
+{
+	bAimDownSight = false;
 }

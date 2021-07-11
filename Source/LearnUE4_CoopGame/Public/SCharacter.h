@@ -31,6 +31,10 @@ protected:
 	// Fire
 	void Fire();
 
+	// Aim down sight
+	void BeginAimDownSight();
+	void EndAimDownSight();
+
 protected:
 	// Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
@@ -49,6 +53,19 @@ protected:
 	TSubclassOf<class ASWeaponGrenadeLauncher> GrenadeLauncherBP;
 
 	class ASWeapon* weapon;
+
+	bool bAimDownSight;
+	float CurrentFov;
+
+	UPROPERTY(EditAnywhere, Category="Player", meta = (ClampMin = 0.1, ClampMax = 100))
+	float AdsInterpSpeed;
+
+	UPROPERTY(EditAnywhere, Category="Player", meta = (ClampMin = 0.1, ClampMax = 360))
+	float AimedFov;
+
+	UPROPERTY(EditAnywhere, Category = "Player", meta = (ClampMin = 0.1, ClampMax = 360))
+	float DefaultFov;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
