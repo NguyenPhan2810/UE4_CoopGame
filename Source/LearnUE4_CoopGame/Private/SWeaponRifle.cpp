@@ -55,24 +55,30 @@ void ASWeaponRifle::Fire()
 				DrawDebugLine(GetWorld(), eyeLocation, traceEnd, FColor::Red, false, 1.5, 0, 1);
 		}
 
-		// Muzzle effect
-		if (MuzzleEffect)
-			UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComponent, MuzzleFlashSocketName);
+		PlayFireEffect(bHit, hitResult);
+	}
+}
+	
+void ASWeaponRifle::PlayFireEffect(bool hit, FHitResult hitResult)
+{
 
-		// Smoke trail effect
-		if (SmokeTrailEffect)
+	// Muzzle effect
+	if (MuzzleEffect)
+		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComponent, MuzzleFlashSocketName);
+
+	// Smoke trail effect
+	if (SmokeTrailEffect)
+	{
+		auto muzzleTrans = MeshComponent->GetSocketTransform(MuzzleFlashSocketName);
+		auto smokeTrailComp = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SmokeTrailEffect, muzzleTrans);
+		if (smokeTrailComp)
 		{
-			auto muzzleTrans = MeshComponent->GetSocketTransform(MuzzleFlashSocketName);
-			auto smokeTrailComp = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SmokeTrailEffect, muzzleTrans);
-			if (smokeTrailComp)
-			{
-				smokeTrailComp->SetVectorParameter(SmokeTrailStartParamName, traceBegin);
+			smokeTrailComp->SetVectorParameter(SmokeTrailStartParamName, hitResult.TraceStart);
 
-				if (bHit)
-					smokeTrailComp->SetVectorParameter(SmokeTrailEndParamName, hitResult.ImpactPoint);
-				else
-					smokeTrailComp->SetVectorParameter(SmokeTrailEndParamName, traceEnd);
-			}
+			if (hit)
+				smokeTrailComp->SetVectorParameter(SmokeTrailEndParamName, hitResult.ImpactPoint);
+			else
+				smokeTrailComp->SetVectorParameter(SmokeTrailEndParamName,  hitResult.TraceEnd);
 		}
 	}
 }

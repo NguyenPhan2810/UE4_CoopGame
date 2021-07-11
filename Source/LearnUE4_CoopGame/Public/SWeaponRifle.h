@@ -17,6 +17,8 @@ class LEARNUE4_COOPGAME_API ASWeaponRifle : public ASWeapon
 public:
 	virtual void Fire() override;
 
+	virtual void PlayFireEffect(bool hit, FHitResult hitResult);
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
