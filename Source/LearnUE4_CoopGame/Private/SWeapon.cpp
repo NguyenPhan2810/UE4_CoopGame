@@ -21,6 +21,7 @@ ASWeapon::ASWeapon()
 	MeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("MeshComponent");
 	SetRootComponent(MeshComponent);
 }
+
 void ASWeapon::Fire()
 {
 	
