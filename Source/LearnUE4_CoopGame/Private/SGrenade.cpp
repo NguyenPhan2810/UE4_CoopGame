@@ -43,8 +43,7 @@ void ASGrenade::Explode()
 		DamageType, ignoredActor, this, GetOwner()->GetInstigatorController(), true, ECC_Visibility);
 
 	if (ASWeapon::DebugWeaponDrawing > 0)
-		UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetActorLocation(), 200, 12, FLinearColor::Red, 1, 1);
-
+		UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetActorLocation(), 200, 12, FLinearColor::Red, 1.5, 1);
 
 	if (ExplodeEffect)
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplodeEffect, GetActorLocation(), GetActorRotation(), FVector(2, 2, 2));

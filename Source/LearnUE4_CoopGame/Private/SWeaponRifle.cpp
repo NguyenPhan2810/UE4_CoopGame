@@ -47,9 +47,12 @@ void ASWeaponRifle::Fire()
 		if (DebugWeaponDrawing > 0)
 		{
 			if (bHit)
-				DrawDebugLine(GetWorld(), hitResult.TraceStart, hitResult.TraceEnd, FColor::Green, false, 1, 0, 1);
+			{
+				DrawDebugLine(GetWorld(), hitResult.TraceStart, hitResult.ImpactPoint, FColor::Green, false, 1.5, 0, 1);
+				DrawDebugSphere(GetWorld(), hitResult.ImpactPoint, 8, 12, FColor::Yellow, false, 1.5, 0, 2);
+			}
 			else
-				DrawDebugLine(GetWorld(), eyeLocation, traceEnd, FColor::Red, false, 1, 0, 1);
+				DrawDebugLine(GetWorld(), eyeLocation, traceEnd, FColor::Red, false, 1.5, 0, 1);
 		}
 
 		// Muzzle effect

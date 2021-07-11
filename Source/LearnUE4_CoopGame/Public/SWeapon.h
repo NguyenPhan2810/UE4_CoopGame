@@ -18,8 +18,6 @@ public:
 	virtual void Fire();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Components")
@@ -35,6 +33,4 @@ public:
 	static int DebugWeaponDrawing;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 };
