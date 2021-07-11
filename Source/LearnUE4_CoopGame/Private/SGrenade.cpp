@@ -7,6 +7,7 @@
 #include <Kismet/GameplayStatics.h>
 #include <Particles/ParticleSystemComponent.h>
 #include "SWeapon.h"
+#include "../LearnUE4_CoopGame.h"
 
 // Sets default values
 ASGrenade::ASGrenade()
@@ -41,7 +42,7 @@ void ASGrenade::Explode()
 	ignoredActor.Add(this);
 
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), 20, GetActorLocation(), 200,
-		DamageType, ignoredActor, this, GetOwner()->GetInstigatorController(), true, ECC_Visibility);
+		DamageType, ignoredActor, this, GetOwner()->GetInstigatorController(), true);
 
 	if (ASWeapon::DebugWeaponDrawing > 0)
 		UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetActorLocation(), 200, 12, FLinearColor::Red, 1.5, 1);

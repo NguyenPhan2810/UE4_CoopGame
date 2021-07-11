@@ -56,6 +56,7 @@ void ASWeaponRifle::Fire()
 			UGameplayStatics::ApplyPointDamage(hitActor, actualDamage, traceDirection, hitResult,
 				owner->GetInstigatorController(), this, DamageType);
 
+
 			// Impact effect
 			UParticleSystem* selectedImpactEffect = nullptr;
 			switch (surfaceType)
