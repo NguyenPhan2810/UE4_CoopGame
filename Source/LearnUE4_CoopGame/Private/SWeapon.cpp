@@ -20,9 +20,28 @@ ASWeapon::ASWeapon()
 {
 	MeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("MeshComponent");
 	SetRootComponent(MeshComponent);
+
+	FireInterval = 1;
+	bEnableAutomaticFire = true;
+	lastFireTime = 0;
 }
 
 void ASWeapon::Fire()
 {
-	
+	lastFireTime = GetWorld()->TimeSeconds;
+}
+
+void ASWeapon::BeginFire()
+{
+	if (bEnableAutomaticFire)
+	{
+		float firstDelay = FMath::Max(lastFireTime + FireInterval - GetWorld()->TimeSeconds, 0.0f);
+		GetWorldTimerManager().SetTimer(FireTimerHandle, this, &ASWeapon::Fire, FireInterval, true, firstDelay);
+	}
+}
+
+void ASWeapon::EndFire()
+{
+	if (bEnableAutomaticFire)
+		GetWorldTimerManager().ClearTimer(FireTimerHandle);
 }

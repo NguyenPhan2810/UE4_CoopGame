@@ -15,7 +15,12 @@ public:
 	// Sets default values for this actor's properties
 	ASWeapon();
 
+	// Fire a single shot
 	virtual void Fire();
+
+	// Automatic fire
+	virtual void BeginFire();
+	virtual void EndFire();
 
 protected:
 
@@ -26,6 +31,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	TSubclassOf<UDamageType> DamageType;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon, meta	= (ClampMin=0))
+	float FireInterval;
+
+	FTimerHandle FireTimerHandle;
+	float lastFireTime;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	bool bEnableAutomaticFire;
 
 public:
 	// Console variable for debugging

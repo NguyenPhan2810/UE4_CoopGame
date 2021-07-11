@@ -107,7 +107,8 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("Turn", this, &ASCharacter::AddControllerYawInput);
 
 	// Fire
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ASCharacter::Fire);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ASCharacter::BeginFire);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ASCharacter::EndFire);
 
 	// Aim down sight
 	PlayerInputComponent->BindAction("AimDownSight", IE_Pressed, this, &ASCharacter::BeginAimDownSight);
@@ -144,11 +145,19 @@ void ASCharacter::EndCrouch()
 	UnCrouch();
 }
 
-void ASCharacter::Fire()
+void ASCharacter::BeginFire()
 {
 	if (weapon)
 	{
-		weapon->Fire();
+		weapon->BeginFire();
+	}
+}
+
+void ASCharacter::EndFire()
+{
+	if (weapon)
+	{
+		weapon->EndFire();
 	}
 }
 

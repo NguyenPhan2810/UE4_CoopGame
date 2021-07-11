@@ -15,6 +15,8 @@ class LEARNUE4_COOPGAME_API ASWeaponGrenadeLauncher : public ASWeapon
 	GENERATED_BODY()
 
 public:
+	ASWeaponGrenadeLauncher();
+
 	virtual void Fire() override;
 
 protected:

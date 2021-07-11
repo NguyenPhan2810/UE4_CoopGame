@@ -9,13 +9,17 @@
 #include "../LearnUE4_CoopGame.h"
 
 ASWeaponRifle::ASWeaponRifle()
-: ASWeapon()
+: Super()
 {
 	BaseDamage = 20;
+	FireInterval = 1 / 10.0;
+	bEnableAutomaticFire = true;
 }
 
 void ASWeaponRifle::Fire()
 {
+	Super::Fire();
+
 	// Trace the world, from muzzle to cross hair location
 	auto owner = GetOwner();
 	if (owner)

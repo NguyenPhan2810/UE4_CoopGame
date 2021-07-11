@@ -29,7 +29,8 @@ protected:
 	void EndCrouch();
 
 	// Fire
-	void Fire();
+	void BeginFire();
+	void EndFire();
 
 	// Aim down sight
 	void BeginAimDownSight();

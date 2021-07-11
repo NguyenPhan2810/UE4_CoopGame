@@ -5,8 +5,16 @@
 #include "SGrenade.h"
 #include <Kismet/GameplayStatics.h>
 
+ASWeaponGrenadeLauncher::ASWeaponGrenadeLauncher()
+: Super()
+{
+	FireInterval = 1;
+	bEnableAutomaticFire = true;
+}
+
 void ASWeaponGrenadeLauncher::Fire()
 {
+	Super::Fire();
 	if (MuzzleEffect)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComponent, MuzzleFlashSocketName);
 
