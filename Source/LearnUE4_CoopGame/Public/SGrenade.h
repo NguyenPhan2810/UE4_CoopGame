@@ -20,13 +20,21 @@ protected:
 	virtual void BeginPlay() override;
 
 	void Explode();
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components)
+	class UStaticMeshComponent* MeshComponent;
+
 protected:
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components)
+	//class UProjectileMovementComponent* ProjectileMovementComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components)
-	class UMeshComponent* MeshComponent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Components)
+	class URadialForceComponent* RadialForceComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components)
-	class UProjectileMovementComponent* ProjectileMovementComponent;
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ExplosiveBarrel)
+	class USoundBase* ExplodeSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	float ExplosionTimer;

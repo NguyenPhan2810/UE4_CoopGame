@@ -17,6 +17,7 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
 	StaticMeshComponent->SetSimulatePhysics(true);
 	StaticMeshComponent->SetCollisionObjectType(ECC_PhysicsBody);
+	StaticMeshComponent->SetMassOverrideInKg(NAME_None, 30);
 	SetRootComponent(StaticMeshComponent);
 
 	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>("RadialForceComponent");
@@ -38,7 +39,7 @@ void ASExplosiveBarrel::BeginPlay()
 	HealthComponent->OnHealthChanged.AddDynamic(this, &ASExplosiveBarrel::HandleHealthChanged);
 }
 
-void ASExplosiveBarrel::HandleHealthChanged(USHealthComponent* OwnerHealthComponent, float CurrentHealth, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
+void ASExplosiveBarrel::HandleHealthChanged(USHealthComponent* OwnerHealthComponent, float CurrentHealth, float HealthDelta, const class UDamageType* CauserDamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
 	if (CurrentHealth <= 0)
 	{
@@ -50,6 +51,11 @@ void ASExplosiveBarrel::HandleHealthChanged(USHealthComponent* OwnerHealthCompon
 
 		if (RadialForceComponent)
 		{
+			TArray<AActor*> ignoredActor;
+			ignoredActor.Add(this);
+
+			UGameplayStatics::ApplyRadialDamage(GetWorld(), 20, GetActorLocation(), RadialForceComponent->Radius, DamageType, ignoredActor, this, nullptr, true);
+
 			RadialForceComponent->FireImpulse();
 
 			if (ASWeapon::DebugWeaponDrawing > 0)

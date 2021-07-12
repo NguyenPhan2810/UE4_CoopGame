@@ -29,4 +29,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	TSubclassOf<class ASGrenade> GrenadeBP;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon, meta=(ClampMin=0))
+	float LaunchStrength;
 };

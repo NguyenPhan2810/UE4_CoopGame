@@ -2,10 +2,11 @@
 
 
 #include "SGrenade.h"
-#include <Components/MeshComponent.h>
+#include <Components/StaticMeshComponent.h>
 #include <GameFramework/ProjectileMovementComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <Particles/ParticleSystemComponent.h>
+#include <PhysicsEngine/RadialForceComponent.h>
 #include "SWeapon.h"
 #include "../LearnUE4_CoopGame.h"
 
@@ -17,13 +18,23 @@ ASGrenade::ASGrenade()
 
 	ExplosionTimer = 1; // second
 
-	MeshComponent = CreateDefaultSubobject<UMeshComponent>("StaticMesh");
-	SetRootComponent(MeshComponent);
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMesh");
+	MeshComponent->SetSimulatePhysics(true);
+	MeshComponent->SetMassOverrideInKg(NAME_None, 1);
+	//MeshComponent->SetCollisionObjectType(ECC_PhysicsBody);
+	//SetRootComponent(MeshComponent);
 
-	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
+	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>("RadialForceComponent");
+	//RadialForceComponent->SetupAttachment(MeshComponent);
+	RadialForceComponent->Radius = 200;
+	RadialForceComponent->ImpulseStrength = 50000;
+	RadialForceComponent->bIgnoreOwningActor = true; // Ignore self
+	RadialForceComponent->bImpulseVelChange = false;
+	RadialForceComponent->bAutoActivate = false; // Prevent component from ticking, use FireImpulse() instead
 
-	ProjectileMovementComponent->InitialSpeed = 1000;
-	ProjectileMovementComponent->MaxSpeed = 1000;
+	//ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
+	//ProjectileMovementComponent->InitialSpeed = 1000;
+	//ProjectileMovementComponent->MaxSpeed = 1000;
 
 	ExplodeOnImpact = true;
 }
@@ -38,18 +49,25 @@ void ASGrenade::BeginPlay()
 
 void ASGrenade::Explode()
 {
-	TArray<AActor*> ignoredActor;
-	ignoredActor.Add(this);
+	if (RadialForceComponent)
+	{
+		TArray<AActor*> ignoredActor;
+		ignoredActor.Add(this);
 
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), 20, GetActorLocation(), 200,
-		DamageType, ignoredActor, this, GetOwner()->GetInstigatorController(), true);
+		UGameplayStatics::ApplyRadialDamage(GetWorld(), 20, GetActorLocation(), RadialForceComponent->Radius,
+			DamageType, ignoredActor, this, GetOwner()->GetInstigatorController(), true);
 
-	if (ASWeapon::DebugWeaponDrawing > 0)
-		UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetActorLocation(), 200, 12, FLinearColor::Red, 1.5, 1);
+		RadialForceComponent->FireImpulse();
 
-	if (ExplodeEffect)
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplodeEffect, GetActorLocation(), GetActorRotation(), FVector(2, 2, 2));
+		if (ASWeapon::DebugWeaponDrawing > 0)
+			UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetActorLocation(), RadialForceComponent->Radius, 12, FLinearColor::Red, 1.5, 1);
 
+		if (ExplodeEffect)
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplodeEffect, GetActorLocation(), GetActorRotation(), FVector(2, 2, 2));
+
+		if (ExplodeSound)
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplodeSound, GetActorLocation());
+	}
 	Destroy();
 }
 
@@ -64,7 +82,8 @@ void ASGrenade::NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, clas
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-	if (ExplodeOnImpact)
+	// Ignore self
+	if (ExplodeOnImpact && Other != this)
 		Explode();
 }
 

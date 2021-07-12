@@ -10,6 +10,7 @@ ASWeaponGrenadeLauncher::ASWeaponGrenadeLauncher()
 {
 	FireInterval = 1;
 	bEnableAutomaticFire = true;
+	LaunchStrength = 1000;
 }
 
 void ASWeaponGrenadeLauncher::Fire()
@@ -30,7 +31,13 @@ void ASWeaponGrenadeLauncher::Fire()
 		FTransform spawnTransform;
 		spawnTransform.SetLocation(spawnLocation);
 		spawnTransform.SetRotation(spawnRotation.Quaternion());
-		auto theGrenade = GetWorld()->SpawnActor<ASGrenade>(GrenadeBP, spawnTransform);
+		ASGrenade* theGrenade = GetWorld()->SpawnActor<ASGrenade>(GrenadeBP, spawnTransform);
 		theGrenade->SetOwner(this);
+		auto meshComponentGrenade = theGrenade->FindComponentByClass<UMeshComponent>();
+		if (meshComponentGrenade)
+		{
+			auto launchDirection = spawnRotation.Vector();
+			meshComponentGrenade->AddImpulse(launchDirection * LaunchStrength, NAME_None, false);
+		}
 	}
 }
