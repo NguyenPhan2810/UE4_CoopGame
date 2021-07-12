@@ -26,9 +26,6 @@ public:
 	class UStaticMeshComponent* MeshComponent;
 
 protected:
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Components)
-	//class UProjectileMovementComponent* ProjectileMovementComponent;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Components)
 	class URadialForceComponent* RadialForceComponent;
 

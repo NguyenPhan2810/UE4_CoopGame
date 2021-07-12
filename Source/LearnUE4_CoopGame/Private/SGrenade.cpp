@@ -27,14 +27,11 @@ ASGrenade::ASGrenade()
 	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>("RadialForceComponent");
 	//RadialForceComponent->SetupAttachment(MeshComponent);
 	RadialForceComponent->Radius = 200;
-	RadialForceComponent->ImpulseStrength = 50000;
+	RadialForceComponent->ImpulseStrength = 2000;
 	RadialForceComponent->bIgnoreOwningActor = true; // Ignore self
 	RadialForceComponent->bImpulseVelChange = false;
 	RadialForceComponent->bAutoActivate = false; // Prevent component from ticking, use FireImpulse() instead
 
-	//ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
-	//ProjectileMovementComponent->InitialSpeed = 1000;
-	//ProjectileMovementComponent->MaxSpeed = 1000;
 
 	ExplodeOnImpact = true;
 }
