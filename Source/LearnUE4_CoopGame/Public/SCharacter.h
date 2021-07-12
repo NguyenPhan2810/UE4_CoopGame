@@ -38,7 +38,7 @@ protected:
 
 
 	UFUNCTION()
-	void OnHealthChanged(USHealthComponent* HealthComponentDamaged, float CurrentHealth, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	void OnHealthChanged(USHealthComponent* OwnerHealthComponent, float CurrentHealth, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 protected:
 	// Components
