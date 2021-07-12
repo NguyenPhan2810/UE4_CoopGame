@@ -12,14 +12,12 @@
 // Sets default values
 ASExplosiveBarrel::ASExplosiveBarrel()
 {
-
 	HealthComponent = CreateDefaultSubobject<USHealthComponent>("HealthComponent");
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
 	StaticMeshComponent->SetSimulatePhysics(true);
 	StaticMeshComponent->SetCollisionObjectType(ECC_PhysicsBody);
-	//SetRootComponent(StaticMeshComponent);
-
+	SetRootComponent(StaticMeshComponent);
 
 	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>("RadialForceComponent");
 	RadialForceComponent->SetupAttachment(StaticMeshComponent);
@@ -69,5 +67,8 @@ void ASExplosiveBarrel::PlayEffect()
 
 	if (MaterialExploded)
 		StaticMeshComponent->SetMaterial(0, MaterialExploded);
+
+	if (ExplodeSound)
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplodeSound, GetActorLocation());
 }
 

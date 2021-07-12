@@ -43,6 +43,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ExplosiveBarrel)
 	class UParticleSystem* ExplodeEffect;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ExplosiveBarrel)
+	class USoundBase* ExplodeSound;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ExplosiveBarrel)
 	FVector BoostIntensity;
 public:	
