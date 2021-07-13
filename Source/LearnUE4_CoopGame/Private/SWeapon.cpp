@@ -24,15 +24,38 @@ ASWeapon::ASWeapon()
 	FireInterval = 1;
 	bEnableAutomaticFire = true;
 	lastFireTime = 0;
+	bAllowedToFire = false;
 	
 	SetReplicates(true);
 }
 
 void ASWeapon::Fire()
 {
-	lastFireTime = GetWorld()->TimeSeconds;
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		bAllowedToFire = true;
 
-	BlueprintFireEvent();
+		lastFireTime = GetWorld()->TimeSeconds;
+
+		BlueprintFireEvent();
+	}
+	else // Client
+	{
+		bAllowedToFire = false;
+		ServerFire();
+	}
+}
+
+void ASWeapon::ServerFire_Implementation()
+{
+	Fire();
+}
+
+// If there's anything wrong with the code that sent to the server
+// the client who sent that code will be disconnected
+bool ASWeapon::ServerFire_Validate()
+{
+	return true;
 }
 
 void ASWeapon::BeginFire()

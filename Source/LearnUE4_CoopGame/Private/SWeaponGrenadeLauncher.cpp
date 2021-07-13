@@ -16,16 +16,22 @@ ASWeaponGrenadeLauncher::ASWeaponGrenadeLauncher()
 void ASWeaponGrenadeLauncher::Fire()
 {
 	Super::Fire();
+
+	if (!bAllowedToFire)
+		return;
+
 	if (MuzzleEffect)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComponent, MuzzleFlashSocketName);
 
 	// Trace the world, from muzzle to cross hair location
-	if (GrenadeBP)
+	auto owner = GetOwner();
+	if (GrenadeBP && owner)
 	{
-		auto cameraManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
+		FVector eyeLocation;
+		FRotator eyeRotation;
+		owner->GetActorEyesViewPoint(eyeLocation, eyeRotation);
 
-		auto spawnRotation = cameraManager->GetCameraRotation();
-
+		auto spawnRotation = eyeRotation;
 		auto spawnLocation = MeshComponent->GetSocketLocation(MuzzleFlashSocketName);
 
 		FTransform spawnTransform;

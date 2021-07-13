@@ -19,6 +19,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	virtual void Fire();
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	virtual void ServerFire();
+
 	// Automatic 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	virtual void BeginFire();
@@ -44,6 +47,8 @@ protected:
 	FTimerHandle FireTimerHandle;
 	float lastFireTime;
 
+	// Any overridden function of Fire should check if this variable is true
+	bool bAllowedToFire;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	bool bEnableAutomaticFire;

@@ -20,6 +20,9 @@ void ASWeaponRifle::Fire()
 {
 	Super::Fire();
 
+	if (!bAllowedToFire)
+		return;
+
 	// Trace the world, from muzzle to cross hair location
 	auto owner = GetOwner();
 	if (owner)
@@ -28,10 +31,7 @@ void ASWeaponRifle::Fire()
 		FRotator eyeRotation;
 		owner->GetActorEyesViewPoint(eyeLocation, eyeRotation);
 
-		auto cameraManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
-
-
-		FVector traceDirection = cameraManager->GetCameraRotation().Vector();
+		FVector traceDirection = eyeRotation.Vector();
 		FVector traceBegin = eyeLocation;
 		FVector traceEnd = traceBegin + traceDirection * 10000;
 		FCollisionQueryParams queryParams;
