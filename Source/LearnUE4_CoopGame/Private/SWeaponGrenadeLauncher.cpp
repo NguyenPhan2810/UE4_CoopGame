@@ -17,8 +17,12 @@ void ASWeaponGrenadeLauncher::Fire()
 {
 	Super::Fire();
 
+	// Effects
 	if (MuzzleEffect)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComponent, MuzzleFlashSocketName);
+
+	if (FireSound)
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
 
 	// Trace the world, from muzzle to cross hair location
 	auto owner = GetOwner();

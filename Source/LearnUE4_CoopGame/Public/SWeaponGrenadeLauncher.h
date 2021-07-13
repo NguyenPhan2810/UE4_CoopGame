@@ -30,6 +30,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	TSubclassOf<class ASGrenade> GrenadeBP;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	class USoundBase* FireSound;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon, meta=(ClampMin=0))
 	float LaunchStrength;

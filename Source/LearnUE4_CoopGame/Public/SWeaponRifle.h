@@ -73,6 +73,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	UParticleSystem* MuzzleEffect;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	class USoundBase* FireSound;
+
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	TSubclassOf<UCameraShakeBase> FireCameraShake;
 };

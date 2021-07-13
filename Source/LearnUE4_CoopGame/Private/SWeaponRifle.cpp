@@ -100,6 +100,9 @@ void ASWeaponRifle::OnRep_HitScanTrace()
 	
 void ASWeaponRifle::PlayFireEffect(FVector traceEnd)
 {
+	// Sound
+	if (FireSound)
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
 
 	// Muzzle effect
 	if (MuzzleEffect)
