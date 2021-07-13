@@ -3,17 +3,18 @@
 
 #include "SCharacter.h"
 
-#include <Camera/CameraComponent.h>
-#include <GameFramework/SpringArmComponent.h>
-#include <GameFramework/PawnMovementComponent.h>
-#include <Components/SkeletalMeshComponent.h>
-#include <Components/CapsuleComponent.h>
-
 #include "SWeapon.h"
 #include "SWeaponRifle.h"
 #include "SWeaponGrenadeLauncher.h"
 #include "Components/SHealthComponent.h"	
 #include "../LearnUE4_CoopGame.h"
+
+#include <Camera/CameraComponent.h>
+#include <GameFramework/SpringArmComponent.h>
+#include <GameFramework/PawnMovementComponent.h>
+#include <Components/SkeletalMeshComponent.h>
+#include <Components/CapsuleComponent.h>
+#include <Net/UnrealNetwork.h>
 
 
 // Sets default values
@@ -66,8 +67,8 @@ void ASCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// Spawn Weapon
-	//if (GetLocalRole() == ROLE_Authority)
-	
+	if (GetLocalRole() == ROLE_Authority)
+	{
 		if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::One) && RifleBP)
 		{
 			if (weapon)
@@ -94,11 +95,7 @@ void ASCharacter::Tick(float DeltaTime)
 			weapon->SetOwner(this);
 			weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
 		}
-	
-	//else
-	
-
-	
+	}
 
 	// Aim down sight
 
@@ -146,6 +143,13 @@ FVector ASCharacter::GetPawnViewLocation() const
 	}
 
 	return Super::GetPawnViewLocation();
+}
+
+void ASCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASCharacter, weapon);
 }
 
 void ASCharacter::MoveForward(float Value)
