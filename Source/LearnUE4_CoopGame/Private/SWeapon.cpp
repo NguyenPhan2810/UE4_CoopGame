@@ -24,7 +24,6 @@ ASWeapon::ASWeapon()
 	FireInterval = 1;
 	bEnableAutomaticFire = true;
 	lastFireTime = 0;
-	bAllowedToFire = false;
 	
 	SetReplicates(true);
 }
@@ -33,15 +32,12 @@ void ASWeapon::Fire()
 {
 	if (GetLocalRole() == ROLE_Authority)
 	{
-		bAllowedToFire = true;
-
 		lastFireTime = GetWorld()->TimeSeconds;
 
 		BlueprintFireEvent();
 	}
 	else // Client
 	{
-		bAllowedToFire = false;
 		ServerFire();
 	}
 }

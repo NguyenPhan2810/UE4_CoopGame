@@ -17,9 +17,6 @@ void ASWeaponGrenadeLauncher::Fire()
 {
 	Super::Fire();
 
-	if (!bAllowedToFire)
-		return;
-
 	if (MuzzleEffect)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComponent, MuzzleFlashSocketName);
 

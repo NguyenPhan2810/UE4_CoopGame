@@ -13,7 +13,7 @@ struct FHitScanTrace
 	GENERATED_BODY()
 public:
 	UPROPERTY()
-	FVector_NetQuantize TraceBegin;
+    TEnumAsByte<EPhysicalSurface> SurfaceType;
 
 	UPROPERTY()
 	FVector_NetQuantize TraceEnd;
@@ -35,9 +35,22 @@ public:
 	virtual void Fire() override;
 
 	virtual void PlayFireEffect(FVector traceEnd);
+	virtual void PlayImpactEffect(EPhysicalSurface surfaceType, FVector traceEnd);
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	FName MuzzleFlashSocketName;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	float BaseDamage;
+
+	UPROPERTY(ReplicatedUsing=OnRep_HitScanTrace)
+	FHitScanTrace HitScanTrace;
+
+	UFUNCTION()
+	void OnRep_HitScanTrace();
+
+protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	UParticleSystem* ImpactEffectDefault;
 
@@ -55,12 +68,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	UParticleSystem* MuzzleEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
-	FName MuzzleFlashSocketName;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
-	float BaseDamage;
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	TSubclassOf<UCameraShakeBase> FireCameraShake;

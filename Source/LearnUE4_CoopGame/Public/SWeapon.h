@@ -47,8 +47,6 @@ protected:
 	FTimerHandle FireTimerHandle;
 	float lastFireTime;
 
-	// Any overridden function of Fire should check if this variable is true
-	bool bAllowedToFire;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	bool bEnableAutomaticFire;
