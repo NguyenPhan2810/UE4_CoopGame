@@ -24,6 +24,8 @@ ASWeapon::ASWeapon()
 	FireInterval = 1;
 	bEnableAutomaticFire = true;
 	lastFireTime = 0;
+
+	bReplicates = true;
 }
 
 void ASWeapon::Fire()

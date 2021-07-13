@@ -124,7 +124,7 @@ void ASWeaponRifle::PlayFireEffect(bool hit, FHitResult hitResult)
 		auto controller = Cast<APlayerController>(player->GetController());
 		if (controller)
 		{
-			controller->ClientPlayCameraShake(FireCameraShake);
+			//controller->ClientPlayCameraShake(FireCameraShake);
 		}
 	}
 }
