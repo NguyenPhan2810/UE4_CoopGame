@@ -150,6 +150,7 @@ void ASCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ASCharacter, weapon);
+	DOREPLIFETIME(ASCharacter, bDied);
 }
 
 void ASCharacter::MoveForward(float Value)

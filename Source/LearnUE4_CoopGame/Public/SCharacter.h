@@ -48,7 +48,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	class USpringArmComponent* SpringArmComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = Components)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	class USHealthComponent* HealthComponent;
 
 	// Weapon Component
@@ -77,7 +77,7 @@ protected:
 	bool bAimDownSight;
 	float CurrentFov;
 
-	UPROPERTY(BlueprintReadOnly, Category = Player)
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = Player)
 	bool bDied;
 
 public:	

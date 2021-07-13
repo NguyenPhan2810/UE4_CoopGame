@@ -26,6 +26,8 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	RadialForceComponent->bIgnoreOwningActor = true; // Ignore self
 	RadialForceComponent->bImpulseVelChange = false; 
 	RadialForceComponent->bAutoActivate = false; // Prevent component from ticking, use FireImpulse() instead
+
+	//SetReplicates(true);
 }
 
 // Called when the game starts or when spawned
