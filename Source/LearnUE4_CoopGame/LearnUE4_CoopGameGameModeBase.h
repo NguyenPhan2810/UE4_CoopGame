@@ -14,4 +14,6 @@ class LEARNUE4_COOPGAME_API ALearnUE4_CoopGameGameModeBase : public AGameModeBas
 {
 	GENERATED_BODY()
 	
+public:
+	ALearnUE4_CoopGameGameModeBase();
 };
