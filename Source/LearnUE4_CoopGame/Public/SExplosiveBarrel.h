@@ -22,6 +22,9 @@ protected:
 	UFUNCTION()
 	void HandleHealthChanged(USHealthComponent* OwnerHealthComponent, float CurrentHealth, float HealthDelta, const class UDamageType* CauserDamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
+	UFUNCTION()
+	void OnRep_Exploded();
+
 	void PlayEffect();
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Components)
@@ -51,6 +54,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ExplosiveBarrel)
 	FVector BoostIntensity;
+
+	UPROPERTY(ReplicatedUsing=OnRep_Exploded)
+	bool bExploded;
+
 public:	
 
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

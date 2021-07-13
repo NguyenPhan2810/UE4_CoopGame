@@ -12,6 +12,7 @@ USHealthComponent::USHealthComponent()
 	Health = DefaultMaxHealth;
 
 	SetIsReplicated(true);
+	
 }
 
 
@@ -46,7 +47,7 @@ void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 	// Board cast event
 	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);
 
-	UE_LOG(LogTemp, Log, TEXT("Health changed: %f"), Health);
+
 }
 
 void USHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

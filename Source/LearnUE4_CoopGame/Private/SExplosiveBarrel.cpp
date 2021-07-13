@@ -2,12 +2,14 @@
 
 
 #include "SExplosiveBarrel.h"
+#include "SWeapon.h"
+
 #include "Components/SHealthComponent.h"
 #include <Components/StaticMeshComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <PhysicsEngine/RadialForceComponent.h>
-#include "SWeapon.h"
 #include <DrawDebugHelpers.h>
+#include <Net/UnrealNetwork.h>
 
 // Sets default values
 ASExplosiveBarrel::ASExplosiveBarrel()
@@ -27,7 +29,8 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	RadialForceComponent->bImpulseVelChange = false; 
 	RadialForceComponent->bAutoActivate = false; // Prevent component from ticking, use FireImpulse() instead
 
-	//SetReplicates(true);
+	SetReplicates(true);
+	SetReplicateMovement(true);
 }
 
 // Called when the game starts or when spawned
@@ -43,11 +46,21 @@ void ASExplosiveBarrel::BeginPlay()
 
 void ASExplosiveBarrel::HandleHealthChanged(USHealthComponent* OwnerHealthComponent, float CurrentHealth, float HealthDelta, const class UDamageType* CauserDamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
+	if (bExploded)
+	{
+		return;
+	}
+
 	if (CurrentHealth <= 0)
 	{
 		// Explode
-		PlayEffect();
+		bExploded = true;
 
+		// Server won't call this but the effect should occur on the server too
+		// so this function is forced to invoke
+		OnRep_Exploded();
+
+		// Blow it self up
 		if (StaticMeshComponent)
 			StaticMeshComponent->AddImpulse(BoostIntensity, NAME_None, true);
 
@@ -56,16 +69,24 @@ void ASExplosiveBarrel::HandleHealthChanged(USHealthComponent* OwnerHealthCompon
 			TArray<AActor*> ignoredActor;
 			ignoredActor.Add(this);
 
+			// Deals damage
 			UGameplayStatics::ApplyRadialDamage(GetWorld(), 20, GetActorLocation(), RadialForceComponent->Radius, DamageType, ignoredActor, this, nullptr, true);
 
+			// Push objects away
 			RadialForceComponent->FireImpulse();
 
+			// Debug
 			if (ASWeapon::DebugWeaponDrawing > 0)
 			{
 				DrawDebugSphere(GetWorld(), GetActorLocation(), RadialForceComponent->Radius, 12, FColor::Red, false, 1.5, 0, 1);
 			}
 		}
 	}
+}
+
+void ASExplosiveBarrel::OnRep_Exploded()
+{
+	PlayEffect();
 }
 
 void ASExplosiveBarrel::PlayEffect()
@@ -80,3 +101,9 @@ void ASExplosiveBarrel::PlayEffect()
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplodeSound, GetActorLocation());
 }
 
+void ASExplosiveBarrel::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASExplosiveBarrel, bExploded);
+}
