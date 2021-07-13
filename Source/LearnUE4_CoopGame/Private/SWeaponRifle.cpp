@@ -90,11 +90,11 @@ void ASWeaponRifle::Fire()
 				DrawDebugLine(GetWorld(), hitResult.TraceStart, hitResult.TraceEnd, FColor::Red, false, 1.5, 0, 1);
 		}
 
-		PlayFireEffect(bHit, hitResult);
+		PlayFireEffect(hitResult.TraceEnd);
 	}
 }
 	
-void ASWeaponRifle::PlayFireEffect(bool hit, FHitResult hitResult)
+void ASWeaponRifle::PlayFireEffect(FVector traceEnd)
 {
 
 	// Muzzle effect
@@ -108,12 +108,8 @@ void ASWeaponRifle::PlayFireEffect(bool hit, FHitResult hitResult)
 		auto smokeTrailComp = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SmokeTrailEffect, muzzleTrans);
 		if (smokeTrailComp)
 		{
-			smokeTrailComp->SetVectorParameter(SmokeTrailStartParamName, hitResult.TraceStart);
-
-			if (hit)
-				smokeTrailComp->SetVectorParameter(SmokeTrailEndParamName, hitResult.ImpactPoint);
-			else
-				smokeTrailComp->SetVectorParameter(SmokeTrailEndParamName,  hitResult.TraceEnd);
+			smokeTrailComp->SetVectorParameter(SmokeTrailStartParamName, muzzleTrans.GetLocation());
+			smokeTrailComp->SetVectorParameter(SmokeTrailEndParamName, traceEnd);
 		}
 	}
 
@@ -124,7 +120,7 @@ void ASWeaponRifle::PlayFireEffect(bool hit, FHitResult hitResult)
 		auto controller = Cast<APlayerController>(player->GetController());
 		if (controller)
 		{
-			//controller->ClientPlayCameraShake(FireCameraShake);
+			controller->ClientPlayCameraShake(FireCameraShake);
 		}
 	}
 }

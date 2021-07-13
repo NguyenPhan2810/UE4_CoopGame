@@ -6,6 +6,19 @@
 #include "SWeapon.h"
 #include "SWeaponRifle.generated.h"
 
+// Contains information of a single hitscan weapon linetrace
+USTRUCT()
+struct FHitScanTrace 
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY()
+	FVector_NetQuantize TraceBegin;
+
+	UPROPERTY()
+	FVector_NetQuantize TraceEnd;
+};
+
 /**
  * 
  */
@@ -21,7 +34,7 @@ public:
 
 	virtual void Fire() override;
 
-	virtual void PlayFireEffect(bool hit, FHitResult hitResult);
+	virtual void PlayFireEffect(FVector traceEnd);
 
 protected:
 
@@ -49,6 +62,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	float BaseDamage;
 
-	//UPROPERTY(EditDefaultsOnly, Category = Weapon)
-	//TSubclassOf<UCameraShakeBase> FireCameraShake;
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	TSubclassOf<UCameraShakeBase> FireCameraShake;
 };
