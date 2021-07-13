@@ -24,6 +24,8 @@ ASWeapon::ASWeapon()
 	FireInterval = 1;
 	bEnableAutomaticFire = true;
 	lastFireTime = 0;
+	NetUpdateFrequency = 66;
+	MinNetUpdateFrequency = 66;
 	
 	SetReplicates(true);
 }

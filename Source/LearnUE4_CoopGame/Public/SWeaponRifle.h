@@ -17,6 +17,9 @@ public:
 
 	UPROPERTY()
 	FVector_NetQuantize TraceEnd;
+
+	UPROPERTY()
+	unsigned int replicationCounter;
 };
 
 /**

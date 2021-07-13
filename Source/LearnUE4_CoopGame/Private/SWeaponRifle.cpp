@@ -15,6 +15,7 @@ ASWeaponRifle::ASWeaponRifle()
 	BaseDamage = 20;
 	FireInterval = 1 / 10.0;
 	bEnableAutomaticFire = true;
+	HitScanTrace.replicationCounter = 0;
 }
 
 void ASWeaponRifle::Fire()
@@ -85,6 +86,7 @@ void ASWeaponRifle::Fire()
 		{
 			HitScanTrace.TraceEnd = impactPoint;
 			HitScanTrace.SurfaceType = surfaceType;
+			HitScanTrace.replicationCounter++; // Force update even if the other values do not change
 		}
 	}
 }
@@ -153,5 +155,5 @@ void ASWeaponRifle::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION(ASWeaponRifle, HitScanTrace,COND_SkipOwner);
+	DOREPLIFETIME_CONDITION(ASWeaponRifle, HitScanTrace, COND_SkipOwner);
 }
