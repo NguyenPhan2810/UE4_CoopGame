@@ -77,7 +77,7 @@ void ASWeaponRifle::Fire()
 		}
 
 		// Fire effect
-		PlayFireEffect(hitResult.TraceEnd);
+		PlayFireEffect(impactPoint);
 		// Impact effect
 		PlayImpactEffect(surfaceType, impactPoint);
 

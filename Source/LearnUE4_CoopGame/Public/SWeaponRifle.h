@@ -18,8 +18,9 @@ public:
 	UPROPERTY()
 	FVector_NetQuantize TraceEnd;
 
+	// Change the variable to force the struct to replicate even if the other variables do not change
 	UPROPERTY()
-	unsigned int replicationCounter;
+	int replicationCounter;
 };
 
 /**
