@@ -27,6 +27,9 @@ void ASTrackerBot::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	currentSegmentEndPoint = GetActorLocation();
+	currentSegmentBeginPoint = GetActorLocation();
+	currentSegmentLength = 0;
 }
 
 FVector ASTrackerBot::GetNextPathPoint()
@@ -52,19 +55,27 @@ void ASTrackerBot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	auto distanceToTarget = (nextPathPoint - GetActorLocation()).Size();
+	auto distanceToTarget = (currentSegmentEndPoint - GetActorLocation()).Size();
 
 	if (distanceToTarget < requiredDistanceToTarget)
 	{
 		// Find new target
-		nextPathPoint = GetNextPathPoint();
+		currentSegmentEndPoint = GetNextPathPoint();
+		currentSegmentBeginPoint = GetActorLocation();
+		currentSegmentLength = (currentSegmentEndPoint - currentSegmentBeginPoint).Size();
 	}
 	else
 	{
 		// Keep moving to target
-		FVector forceDirection = nextPathPoint - GetActorLocation();
+		FVector forceDirection = currentSegmentEndPoint - GetActorLocation();
 		forceDirection.Normalize();
 
-		meshComponent->AddForce(forceDirection * movementForce, NAME_None, bUseAccelerationChange);
+
+		FVector calculatedForce = forceDirection * movementForce * (distanceToTarget / currentSegmentLength);
+
+		
+
+		//The nearer the distance the smaller the force
+		meshComponent->AddForce(calculatedForce, NAME_None, bUseAccelerationChange);
 	}
 }

@@ -36,7 +36,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
 	bool bUseAccelerationChange;
 
-	FVector nextPathPoint;
+	// The target point to reach
+	FVector currentSegmentEndPoint;
+
+	// The start point of the tracker bot trying to reach the target
+	FVector currentSegmentBeginPoint;
+
+	float currentSegmentLength;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
