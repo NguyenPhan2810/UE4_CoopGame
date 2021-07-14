@@ -20,9 +20,23 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
-	UPROPERTY(VisibleAnywhere, Category = Components)
-	class UStaticMeshComponent* MeshComponent;
+	FVector GetNextPathPoint();
 
+protected:
+	UPROPERTY(VisibleAnywhere, Category = Components)
+	class UStaticMeshComponent* meshComponent;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	float requiredDistanceToTarget;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	float movementForce;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	bool bUseAccelerationChange;
+
+	FVector nextPathPoint;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
