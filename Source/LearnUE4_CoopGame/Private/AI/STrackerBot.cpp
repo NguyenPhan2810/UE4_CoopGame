@@ -7,6 +7,8 @@
 #include <Kismet/GameplayStatics.h>
 #include <NavigationSystem.h>
 #include <NavigationPath.h>
+#include <DrawDebugHelpers.h>
+
 
 // Sets default values
 ASTrackerBot::ASTrackerBot()
@@ -19,6 +21,7 @@ ASTrackerBot::ASTrackerBot()
 	meshComponent->SetSimulatePhysics(true);
 	bUseAccelerationChange = false;
 	requiredDistanceToTarget = 100;
+	maxSpeed = 400;
 	movementForce = 1000;
 }
 
@@ -36,15 +39,17 @@ FVector ASTrackerBot::GetNextPathPoint()
 {
 	auto player = UGameplayStatics::GetPlayerPawn(this, 0);
 
-	// Find path
-	auto path = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), player);
-	
-	// Return next point excluding it self
-	if (path->PathPoints.Num() > 0)
+	if (player)
 	{
-		return path->PathPoints[1];
-	}
+		// Find path
+		auto path = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), player);
 
+		// Return next point excluding it self
+		if (path->PathPoints.Num() > 0)
+		{
+			return path->PathPoints[1];
+		}
+	}
 
 	// Failed to get next point
 	return GetActorLocation();
@@ -69,13 +74,13 @@ void ASTrackerBot::Tick(float DeltaTime)
 		// Keep moving to target
 		FVector forceDirection = currentSegmentEndPoint - GetActorLocation();
 		forceDirection.Normalize();
+		meshComponent->AddForce(forceDirection * movementForce, NAME_None, bUseAccelerationChange);
 
-
-		FVector calculatedForce = forceDirection * movementForce * (distanceToTarget / currentSegmentLength);
-
-		
-
-		//The nearer the distance the smaller the force
-		meshComponent->AddForce(calculatedForce, NAME_None, bUseAccelerationChange);
+		if (GetVelocity().Size() > maxSpeed)
+		{
+			auto velDirection = GetVelocity();
+			velDirection.Normalize();
+			meshComponent->SetAllPhysicsLinearVelocity(velDirection * maxSpeed);
+		}
 	}
 }

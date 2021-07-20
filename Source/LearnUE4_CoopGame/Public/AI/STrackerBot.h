@@ -34,6 +34,10 @@ protected:
 	float movementForce;
 
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	float maxSpeed;
+
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
 	bool bUseAccelerationChange;
 
 	// The target point to reach
