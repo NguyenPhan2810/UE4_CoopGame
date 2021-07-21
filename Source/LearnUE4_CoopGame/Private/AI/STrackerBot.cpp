@@ -50,7 +50,7 @@ ASTrackerBot::ASTrackerBot()
 	audioComponent = CreateDefaultSubobject<UAudioComponent>("AudioComponent");
 
 
-	bReplicates = true;
+	SetReplicates(true);
 	SetReplicateMovement(true);
 }
 
@@ -155,8 +155,6 @@ void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 
 void ASTrackerBot::Explode()
 {
-	audioComponent->SetPaused(true);
-
 	if (GetLocalRole() != ROLE_Authority)
 		return;
 
@@ -205,6 +203,10 @@ void ASTrackerBot::SelfDamage()
 
 void ASTrackerBot::PlayExplosionEffects()
 {
+	// Stop rolling sound
+	if (audioComponent)
+		audioComponent->SetPaused(true);
+
 	if (explosionEffect)
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), explosionEffect, GetActorTransform());
 
@@ -214,6 +216,10 @@ void ASTrackerBot::PlayExplosionEffects()
 
 void ASTrackerBot::PlayStartExplosionEffects()
 {
+	// Stop rolling sound
+	if (audioComponent)
+		audioComponent->SetPaused(true);
+
 	// Sound effect
 	if (explosionSequenceSound)
 		UGameplayStatics::SpawnSoundAttached(explosionSequenceSound, RootComponent);

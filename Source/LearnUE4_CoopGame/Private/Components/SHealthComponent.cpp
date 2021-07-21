@@ -11,8 +11,7 @@ USHealthComponent::USHealthComponent()
 	DefaultMaxHealth = 100;
 	Health = DefaultMaxHealth;
 
-	SetIsReplicated(true);
-	
+	SetIsReplicatedByDefault(true);
 }
 
 
