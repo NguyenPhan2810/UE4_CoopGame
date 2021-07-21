@@ -15,13 +15,17 @@
 
 // Sets default values
 ASTrackerBot::ASTrackerBot()
-	: materialInstance(nullptr)
-	, bUseAccelerationChange(false)
-	, requiredDistanceToTarget(50)
-	, maxSpeed(500)
-	, movementForce(4000)
-	, explosionRadius(200)
-	, explosionDamage(40)
+: materialInstance(nullptr)
+, bUseAccelerationChange(false)
+, requiredDistanceToTarget(50)
+, maxSpeed(500)
+, movementForce(4000)
+, explosionRadius(200)
+, explosionDamage(40)
+, bExploded(false)
+, bExplosionSequenceStarted(false)
+, selfDamageDamage(20)
+, selfDamageInteral(0.3)
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -39,7 +43,6 @@ ASTrackerBot::ASTrackerBot()
 	sphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly); // Don't let the sphere component simulate any physics
 	sphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	sphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-
 }
 
 // Called when the game starts or when spawned
@@ -57,27 +60,35 @@ void ASTrackerBot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	auto distanceToTarget = (currentSegmentEndPoint - GetActorLocation()).Size();
 
-	if (distanceToTarget < requiredDistanceToTarget)
+	if (bExplosionSequenceStarted)
 	{
-		// Find new target
-		currentSegmentEndPoint = GetNextPathPoint();
-		currentSegmentBeginPoint = GetActorLocation();
-		currentSegmentLength = (currentSegmentEndPoint - currentSegmentBeginPoint).Size();
+		meshComponent->SetAllPhysicsLinearVelocity(FVector(0, 0, 100));
 	}
 	else
 	{
-		// Keep moving to target
-		FVector forceDirection = currentSegmentEndPoint - GetActorLocation();
-		forceDirection.Normalize();
-		meshComponent->AddForce(forceDirection * movementForce, NAME_None, bUseAccelerationChange);
+		auto distanceToTarget = (currentSegmentEndPoint - GetActorLocation()).Size();
 
-		if (GetVelocity().Size() > maxSpeed)
+		if (distanceToTarget < requiredDistanceToTarget)
 		{
-			auto velDirection = GetVelocity();
-			velDirection.Normalize();
-			meshComponent->SetAllPhysicsLinearVelocity(velDirection * maxSpeed);
+			// Find new target
+			currentSegmentEndPoint = GetNextPathPoint();
+			currentSegmentBeginPoint = GetActorLocation();
+			currentSegmentLength = (currentSegmentEndPoint - currentSegmentBeginPoint).Size();
+		}
+		else
+		{
+			// Keep moving to target
+			FVector forceDirection = currentSegmentEndPoint - GetActorLocation();
+			forceDirection.Normalize();
+			meshComponent->AddForce(forceDirection * movementForce, NAME_None, bUseAccelerationChange);
+
+			if (GetVelocity().Size() > maxSpeed)
+			{
+				auto velDirection = GetVelocity();
+				velDirection.Normalize();
+				meshComponent->SetAllPhysicsLinearVelocity(velDirection * maxSpeed);
+			}
 		}
 	}
 }
@@ -104,7 +115,7 @@ void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	if (playerPawn)
 	{
-		Explode();
+		StartExplosionSequence();
 	}
 }
 
@@ -132,6 +143,27 @@ void ASTrackerBot::Explode()
 	DrawDebugSphere(GetWorld(), GetActorLocation(), explosionRadius, 12, FColor::Red, false, 1);
 
 	Destroy();
+}
+
+void ASTrackerBot::StartExplosionSequence()
+{
+	if (bExplosionSequenceStarted)
+	{
+		return;
+	}
+
+	bExplosionSequenceStarted = true;
+
+	// Sound effect
+	if (explosionSequenceSound)
+		UGameplayStatics::SpawnSoundAttached(explosionSequenceSound, RootComponent);
+
+	GetWorld()->GetTimerManager().SetTimer(timerHandle_ExplosionSequence, this, &ASTrackerBot::SelfDamage, selfDamageInteral, true, 0);
+}
+
+void ASTrackerBot::SelfDamage()
+{
+	UGameplayStatics::ApplyDamage(this, selfDamageDamage, GetInstigatorController(), this, nullptr);
 }
 
 FVector ASTrackerBot::GetNextPathPoint()

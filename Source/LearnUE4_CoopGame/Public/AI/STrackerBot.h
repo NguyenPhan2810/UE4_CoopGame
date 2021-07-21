@@ -27,7 +27,13 @@ protected: // Self methods
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+	// Explode and deal damage
 	void Explode();
+
+	// Start explosion sequence when near player
+	void StartExplosionSequence();
+
+	void SelfDamage();
 
 protected: // Components
 	UPROPERTY(VisibleAnywhere, Category = Components)
@@ -48,6 +54,9 @@ protected: // Variables with UPROPERTIES
 
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
 	class USoundBase* explosionSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	class USoundBase* explosionSequenceSound;
 
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
 	TSubclassOf<UDamageType> damageType;
@@ -74,6 +83,12 @@ protected: // Variables with UPROPERTIES
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
 	float explosionDamage;
 
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	float selfDamageInteral;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	float selfDamageDamage;
+
 protected: // Normal variable
 	
 	// The target point to reach
@@ -82,12 +97,15 @@ protected: // Normal variable
 	// The start point of the tracker bot trying to reach the target
 	FVector currentSegmentBeginPoint;
 
+	FTimerHandle timerHandle_ExplosionSequence;
+
 	float currentSegmentLength;
 
 	// Material to pulse on damage
 	class UMaterialInstanceDynamic* materialInstance;
 
 	bool bExploded;
+	bool bExplosionSequenceStarted;
 
 public:	
 	// Called every frame
