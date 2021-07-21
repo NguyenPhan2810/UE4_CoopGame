@@ -34,6 +34,7 @@ ASTrackerBot::ASTrackerBot()
 	PrimaryActorTick.bCanEverTick = true;
 
 	meshComponent = CreateDefaultSubobject<UStaticMeshComponent>("MeshComponent");
+	SetRootComponent(meshComponent);
 	meshComponent->SetCanEverAffectNavigation(false);
 	meshComponent->SetSimulatePhysics(true);
 
@@ -41,14 +42,14 @@ ASTrackerBot::ASTrackerBot()
 	healthComponent->OnHealthChanged.AddDynamic(this, &ASTrackerBot::HandleHealthChanged);
 
 	sphereComponent = CreateDefaultSubobject<USphereComponent>("SphereComponent");
-	sphereComponent->SetupAttachment(meshComponent);
+	sphereComponent->SetupAttachment(RootComponent);
 	sphereComponent->SetSphereRadius(199);
 	sphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly); // Don't let the sphere component simulate any physics
 	sphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	sphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
 	audioComponent = CreateDefaultSubobject<UAudioComponent>("AudioComponent");
-
+	audioComponent->SetupAttachment(RootComponent);
 
 	SetReplicates(true);
 	SetReplicateMovement(true);
