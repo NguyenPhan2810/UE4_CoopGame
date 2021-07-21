@@ -12,6 +12,8 @@
 #include <NavigationPath.h>
 #include <DrawDebugHelpers.h>
 #include <Components/SphereComponent.h>
+#include <Net/UnrealNetwork.h>
+#include <Components/AudioComponent.h>
 
 // Sets default values
 ASTrackerBot::ASTrackerBot()
@@ -44,12 +46,24 @@ ASTrackerBot::ASTrackerBot()
 	sphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly); // Don't let the sphere component simulate any physics
 	sphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	sphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	audioComponent = CreateDefaultSubobject<UAudioComponent>("AudioComponent");
+
+
+	bReplicates = true;
+	SetReplicateMovement(true);
 }
 
 // Called when the game starts or when spawned
 void ASTrackerBot::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (rollingSound)
+	{
+		audioComponent->SetSound(rollingSound);
+		audioComponent->Play();
+	}
 
 	if (GetLocalRole() == ROLE_Authority)
 	{
@@ -99,6 +113,7 @@ void ASTrackerBot::Tick(float DeltaTime)
 	}
 }
 
+// Already works only in server
 void ASTrackerBot::HandleHealthChanged(USHealthComponent* HealthComponent, float CurrentHealth, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
 	if (CurrentHealth <= 0)
@@ -113,32 +128,44 @@ void ASTrackerBot::HandleHealthChanged(USHealthComponent* HealthComponent, float
 		materialInstance->SetScalarParameterValue(materialParamLastTimeDamageTaken, GetWorld()->TimeSeconds);
 }
 
+void ASTrackerBot::OnRep_Exploded()
+{
+	PlayExplosionEffects();
+}
+
+void ASTrackerBot::OnRep_ExplosionSequenceStarted()
+{
+	PlayStartExplosionEffects();
+}
+
 void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	auto playerPawn = Cast<ASCharacter>(OtherActor);
-
-	if (playerPawn)
+	if (GetLocalRole() == ROLE_Authority)
 	{
-		StartExplosionSequence();
+		auto playerPawn = Cast<ASCharacter>(OtherActor);
+
+		if (playerPawn)
+		{
+			StartExplosionSequence();
+		}
 	}
 }
 
 void ASTrackerBot::Explode()
 {
-	if (bExploded)
-	{
+	audioComponent->SetPaused(true);
+
+	if (GetLocalRole() != ROLE_Authority)
 		return;
-	}
+
+	if (bExploded)
+		return;
 
 	bExploded = true;
 
-	if (explosionEffect)
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), explosionEffect, GetActorTransform());
-
-	if (explosionSound)
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), explosionSound, GetActorLocation());
+	PlayExplosionEffects();
 
 	// Deals damage
 	TArray<AActor*> ignoredActor;
@@ -148,21 +175,25 @@ void ASTrackerBot::Explode()
 
 	DrawDebugSphere(GetWorld(), GetActorLocation(), explosionRadius, 12, FColor::Red, false, 1);
 
-	Destroy();
+	// Set life span instead of destroy the actor to let the replication occurs
+
+	SetActorTickEnabled(false);
+	SetActorHiddenInGame(true);
+
+	SetLifeSpan(2);
 }
 
 void ASTrackerBot::StartExplosionSequence()
 {
-	if (bExplosionSequenceStarted)
-	{
+	if (GetLocalRole() != ROLE_Authority)
 		return;
-	}
+
+	if (bExplosionSequenceStarted)
+		return;
 
 	bExplosionSequenceStarted = true;
 
-	// Sound effect
-	if (explosionSequenceSound)
-		UGameplayStatics::SpawnSoundAttached(explosionSequenceSound, RootComponent);
+	PlayStartExplosionEffects();
 
 	GetWorld()->GetTimerManager().SetTimer(timerHandle_ExplosionSequence, this, &ASTrackerBot::SelfDamage, selfDamageInteral, true, 0);
 }
@@ -170,6 +201,22 @@ void ASTrackerBot::StartExplosionSequence()
 void ASTrackerBot::SelfDamage()
 {
 	UGameplayStatics::ApplyDamage(this, selfDamageDamage, GetInstigatorController(), this, nullptr);
+}
+
+void ASTrackerBot::PlayExplosionEffects()
+{
+	if (explosionEffect)
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), explosionEffect, GetActorTransform());
+
+	if (explosionSound)
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), explosionSound, GetActorLocation());
+}
+
+void ASTrackerBot::PlayStartExplosionEffects()
+{
+	// Sound effect
+	if (explosionSequenceSound)
+		UGameplayStatics::SpawnSoundAttached(explosionSequenceSound, RootComponent);
 }
 
 FVector ASTrackerBot::GetNextPathPoint()
@@ -190,4 +237,12 @@ FVector ASTrackerBot::GetNextPathPoint()
 
 	// Failed to get next point
 	return GetActorLocation();
+}
+
+void ASTrackerBot::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASTrackerBot, bExploded);
+	DOREPLIFETIME(ASTrackerBot, bExplosionSequenceStarted);
 }

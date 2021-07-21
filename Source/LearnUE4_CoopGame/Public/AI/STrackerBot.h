@@ -25,6 +25,13 @@ protected: // Self methods
 	UFUNCTION()
 	void HandleHealthChanged(USHealthComponent* HealthComponent, float CurrentHealth, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
+	UFUNCTION()
+	void OnRep_Exploded();
+
+	UFUNCTION()
+	void OnRep_ExplosionSequenceStarted();
+
+
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 	// Explode and deal damage
@@ -35,6 +42,9 @@ protected: // Self methods
 
 	void SelfDamage();
 
+	void PlayExplosionEffects();
+	void PlayStartExplosionEffects();
+
 protected: // Components
 	UPROPERTY(VisibleAnywhere, Category = Components)
 	class UStaticMeshComponent* meshComponent;
@@ -44,6 +54,9 @@ protected: // Components
 
 	UPROPERTY(VisibleAnywhere, Category = Components)
 	class USphereComponent* sphereComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
+	class UAudioComponent* audioComponent;
 
 protected: // Variables with UPROPERTIES
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
@@ -57,6 +70,9 @@ protected: // Variables with UPROPERTIES
 
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
 	class USoundBase* explosionSequenceSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	class USoundBase* rollingSound;
 
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
 	TSubclassOf<UDamageType> damageType;
@@ -89,6 +105,12 @@ protected: // Variables with UPROPERTIES
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
 	float selfDamageDamage;
 
+	UPROPERTY(ReplicatedUsing=OnRep_Exploded)
+	bool bExploded;
+
+	UPROPERTY(ReplicatedUsing=OnRep_ExplosionSequenceStarted)
+	bool bExplosionSequenceStarted;
+
 protected: // Normal variable
 	
 	// The target point to reach
@@ -103,9 +125,6 @@ protected: // Normal variable
 
 	// Material to pulse on damage
 	class UMaterialInstanceDynamic* materialInstance;
-
-	bool bExploded;
-	bool bExplosionSequenceStarted;
 
 public:	
 	// Called every frame
