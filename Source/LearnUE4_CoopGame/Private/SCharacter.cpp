@@ -67,35 +67,10 @@ void ASCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// Spawn Weapon
-	if (GetLocalRole() == ROLE_Authority)
-	{
-		if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::One) && RifleBP)
-		{
-			if (weapon)
-			{
-				weapon->Destroy();
-			}
-
-			FActorSpawnParameters spawnParams;
-			spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			weapon = GetWorld()->SpawnActor<ASWeaponRifle>(RifleBP, spawnParams);
-			weapon->SetOwner(this);
-			weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
-		}
-		else if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::Two) && GrenadeLauncherBP)
-		{
-			if (weapon)
-			{
-				weapon->Destroy();
-			}
-
-			FActorSpawnParameters spawnParams;
-			spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			weapon = GetWorld()->SpawnActor<ASWeaponGrenadeLauncher>(GrenadeLauncherBP, spawnParams);
-			weapon->SetOwner(this);
-			weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
-		}
-	}
+	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::One) && RifleBP)
+		HandleSpawnWeapons(1);
+	else if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::Two) && GrenadeLauncherBP)
+		HandleSpawnWeapons(2);
 
 	// Aim down sight
 
@@ -197,6 +172,41 @@ void ASCharacter::BeginAimDownSight()
 void ASCharacter::EndAimDownSight()
 {
 	bAimDownSight = false;
+}
+
+void ASCharacter::HandleSpawnWeapons_Implementation(int weaponType)
+{
+	if (weaponType == 1)
+	{
+		if (weapon)
+		{
+			weapon->Destroy();
+		}
+
+		FActorSpawnParameters spawnParams;
+		spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		weapon = GetWorld()->SpawnActor<ASWeaponRifle>(RifleBP, spawnParams);
+		weapon->SetOwner(this);
+		weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
+	}
+	else if (weaponType == 2)
+	{
+		if (weapon)
+		{
+			weapon->Destroy();
+		}
+
+		FActorSpawnParameters spawnParams;
+		spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		weapon = GetWorld()->SpawnActor<ASWeaponGrenadeLauncher>(GrenadeLauncherBP, spawnParams);
+		weapon->SetOwner(this);
+		weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
+	}
+}
+
+bool ASCharacter::HandleSpawnWeapons_Validate(int weaponType)
+{
+	return true;
 }
 
 void ASCharacter::OnHealthChanged(USHealthComponent* HealthComponentDamaged, float CurrentHealth, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)

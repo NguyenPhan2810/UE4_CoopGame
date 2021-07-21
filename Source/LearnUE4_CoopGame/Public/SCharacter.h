@@ -36,6 +36,9 @@ protected:
 	void BeginAimDownSight();
 	void EndAimDownSight();
 
+	// Spawn weapons as requested
+	UFUNCTION(Server, Reliable, WithValidation)
+	virtual void HandleSpawnWeapons(int weaponType);
 
 	UFUNCTION()
 	void OnHealthChanged(USHealthComponent* OwnerHealthComponent, float CurrentHealth, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
