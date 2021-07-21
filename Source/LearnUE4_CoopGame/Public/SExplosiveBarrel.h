@@ -43,7 +43,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ExplosiveBarrel)
 	class UMaterialInterface* MaterialExploded;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ExplosiveBarrel)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ExplosiveBarrel)
 	class UParticleSystem* ExplodeEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ExplosiveBarrel)

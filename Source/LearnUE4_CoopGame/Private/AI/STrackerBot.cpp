@@ -19,6 +19,8 @@ ASTrackerBot::ASTrackerBot()
 , requiredDistanceToTarget(50)
 , maxSpeed(500)
 , movementForce(4000)
+, explosionRadius(200)
+, explosionDamage(40)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -95,7 +97,7 @@ void ASTrackerBot::HandleHealthChanged(USHealthComponent* HealthComponent, float
 {
 	if (CurrentHealth <= 0)
 	{
-		Destroy();
+		SelfDestruct();
 	}
 
 	if (materialInstance == nullptr)
@@ -103,4 +105,30 @@ void ASTrackerBot::HandleHealthChanged(USHealthComponent* HealthComponent, float
 
 	if (materialInstance)
 		materialInstance->SetScalarParameterValue(materialParamLastTimeDamageTaken, GetWorld()->TimeSeconds);
+}
+
+void ASTrackerBot::SelfDestruct()
+{
+	if (bExploded)
+	{
+		return;
+	}
+
+	bExploded = true;
+
+	if (explosionEffect)
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), explosionEffect, GetActorTransform());
+
+	if (explosionSound)
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), explosionSound, GetActorLocation());
+
+	// Deals damage
+	TArray<AActor*> ignoredActor;
+	ignoredActor.Add(this);
+
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), explosionDamage, GetActorLocation(), explosionRadius, damageType, ignoredActor, this, nullptr, true);
+
+	DrawDebugSphere(GetWorld(), GetActorLocation(), explosionRadius, 12, FColor::Red, false, 1);
+
+	Destroy();
 }

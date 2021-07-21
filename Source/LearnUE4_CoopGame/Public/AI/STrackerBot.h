@@ -19,13 +19,15 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-protected:
+protected: // Self methods
 	FVector GetNextPathPoint();
 
 	UFUNCTION()
 	void HandleHealthChanged(USHealthComponent* HealthComponent, float CurrentHealth, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
-protected:
+	void SelfDestruct();
+
+protected: // Components
 	UPROPERTY(VisibleAnywhere, Category = Components)
 	class UStaticMeshComponent* meshComponent;
 
@@ -58,6 +60,24 @@ protected:
 
 	// Material to pulse on damage
 	class UMaterialInstanceDynamic* materialInstance;
+
+	bool bExploded;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	class UParticleSystem* explosionEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	class USoundBase* explosionSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	TSubclassOf<UDamageType> damageType;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	float explosionRadius;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	float explosionDamage;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
