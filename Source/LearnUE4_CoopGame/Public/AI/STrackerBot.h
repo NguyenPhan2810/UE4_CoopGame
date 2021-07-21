@@ -22,9 +22,15 @@ protected:
 protected:
 	FVector GetNextPathPoint();
 
+	UFUNCTION()
+	void HandleHealthChanged(USHealthComponent* HealthComponent, float CurrentHealth, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+
 protected:
 	UPROPERTY(VisibleAnywhere, Category = Components)
 	class UStaticMeshComponent* meshComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = Components)
+	class USHealthComponent* healthComponent;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
@@ -36,7 +42,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
 	float maxSpeed;
 
-
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
 	bool bUseAccelerationChange;
 
@@ -47,6 +52,12 @@ protected:
 	FVector currentSegmentBeginPoint;
 
 	float currentSegmentLength;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	FName materialParamLastTimeDamageTaken;
+
+	// Material to pulse on damage
+	class UMaterialInstanceDynamic* materialInstance;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
