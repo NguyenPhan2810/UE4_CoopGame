@@ -26,6 +26,7 @@ ASTrackerBot::ASTrackerBot()
 , bExplosionSequenceStarted(false)
 , selfDamageDamage(20)
 , selfDamageInteral(0.3)
+, currentSegmentLength(0)
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -50,9 +51,11 @@ void ASTrackerBot::BeginPlay()
 {
 	Super::BeginPlay();
 
-	currentSegmentEndPoint = GetActorLocation();
-	currentSegmentBeginPoint = GetActorLocation();
-	currentSegmentLength = 0;
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		currentSegmentEndPoint = GetActorLocation();
+		currentSegmentBeginPoint = GetActorLocation();
+	}
 }
 
 // Called every frame
@@ -61,33 +64,36 @@ void ASTrackerBot::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 
-	if (bExplosionSequenceStarted)
+	if (GetLocalRole() == ROLE_Authority)
 	{
-		meshComponent->SetAllPhysicsLinearVelocity(FVector(0, 0, 100));
-	}
-	else
-	{
-		auto distanceToTarget = (currentSegmentEndPoint - GetActorLocation()).Size();
-
-		if (distanceToTarget < requiredDistanceToTarget)
+		if (bExplosionSequenceStarted)
 		{
-			// Find new target
-			currentSegmentEndPoint = GetNextPathPoint();
-			currentSegmentBeginPoint = GetActorLocation();
-			currentSegmentLength = (currentSegmentEndPoint - currentSegmentBeginPoint).Size();
+			meshComponent->SetAllPhysicsLinearVelocity(FVector(0, 0, 100));
 		}
 		else
 		{
-			// Keep moving to target
-			FVector forceDirection = currentSegmentEndPoint - GetActorLocation();
-			forceDirection.Normalize();
-			meshComponent->AddForce(forceDirection * movementForce, NAME_None, bUseAccelerationChange);
+			auto distanceToTarget = (currentSegmentEndPoint - GetActorLocation()).Size();
 
-			if (GetVelocity().Size() > maxSpeed)
+			if (distanceToTarget < requiredDistanceToTarget)
 			{
-				auto velDirection = GetVelocity();
-				velDirection.Normalize();
-				meshComponent->SetAllPhysicsLinearVelocity(velDirection * maxSpeed);
+				// Find new target
+				currentSegmentEndPoint = GetNextPathPoint();
+				currentSegmentBeginPoint = GetActorLocation();
+				currentSegmentLength = (currentSegmentEndPoint - currentSegmentBeginPoint).Size();
+			}
+			else
+			{
+				// Keep moving to target
+				FVector forceDirection = currentSegmentEndPoint - GetActorLocation();
+				forceDirection.Normalize();
+				meshComponent->AddForce(forceDirection * movementForce, NAME_None, bUseAccelerationChange);
+
+				if (GetVelocity().Size() > maxSpeed)
+				{
+					auto velDirection = GetVelocity();
+					velDirection.Normalize();
+					meshComponent->SetAllPhysicsLinearVelocity(velDirection * maxSpeed);
+				}
 			}
 		}
 	}
@@ -168,7 +174,7 @@ void ASTrackerBot::SelfDamage()
 
 FVector ASTrackerBot::GetNextPathPoint()
 {
-	auto player = UGameplayStatics::GetPlayerPawn(this, 0);
+	auto player = UGameplayStatics::GetPlayerCharacter(this, 0);
 
 	if (player)
 	{

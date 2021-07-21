@@ -71,7 +71,7 @@ protected: // Variables with UPROPERTIES
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
 	float movementForce;
 
-	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = TrackerBot)
 	float maxSpeed;
 
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
