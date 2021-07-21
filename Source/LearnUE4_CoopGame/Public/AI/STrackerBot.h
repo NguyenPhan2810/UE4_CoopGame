@@ -25,7 +25,9 @@ protected: // Self methods
 	UFUNCTION()
 	void HandleHealthChanged(USHealthComponent* HealthComponent, float CurrentHealth, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
-	void SelfDestruct();
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+	void Explode();
 
 protected: // Components
 	UPROPERTY(VisibleAnywhere, Category = Components)
@@ -34,7 +36,26 @@ protected: // Components
 	UPROPERTY(VisibleAnywhere, Category = Components)
 	class USHealthComponent* healthComponent;
 
-protected:
+	UPROPERTY(VisibleAnywhere, Category = Components)
+	class USphereComponent* sphereComponent;
+
+protected: // Variables with UPROPERTIES
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	class UParticleSystem* explosionEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	FName materialParamLastTimeDamageTaken;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	class USoundBase* explosionSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	TSubclassOf<UDamageType> damageType;
+
+	//
+	// 
+	//
+
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
 	float requiredDistanceToTarget;
 
@@ -47,6 +68,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
 	bool bUseAccelerationChange;
 
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	float explosionRadius;
+
+	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
+	float explosionDamage;
+
+protected: // Normal variable
+	
 	// The target point to reach
 	FVector currentSegmentEndPoint;
 
@@ -55,28 +84,10 @@ protected:
 
 	float currentSegmentLength;
 
-	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
-	FName materialParamLastTimeDamageTaken;
-
 	// Material to pulse on damage
 	class UMaterialInstanceDynamic* materialInstance;
 
 	bool bExploded;
-
-	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
-	class UParticleSystem* explosionEffect;
-
-	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
-	class USoundBase* explosionSound;
-
-	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
-	TSubclassOf<UDamageType> damageType;
-
-	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
-	float explosionRadius;
-
-	UPROPERTY(EditDefaultsOnly, Category = TrackerBot)
-	float explosionDamage;
 
 public:	
 	// Called every frame

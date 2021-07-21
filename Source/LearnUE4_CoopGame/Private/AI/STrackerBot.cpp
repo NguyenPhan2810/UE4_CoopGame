@@ -3,7 +3,7 @@
 
 #include "AI/STrackerBot.h"
 #include "Components/SHealthComponent.h"
-
+#include "SCharacter.h"
 
 #include <Components/StaticMeshComponent.h>
 #include <NavigationSystem.h>
@@ -11,18 +11,19 @@
 #include <NavigationSystem.h>
 #include <NavigationPath.h>
 #include <DrawDebugHelpers.h>
+#include <Components/SphereComponent.h>
 
 // Sets default values
 ASTrackerBot::ASTrackerBot()
-: materialInstance(nullptr)
-, bUseAccelerationChange(false)
-, requiredDistanceToTarget(50)
-, maxSpeed(500)
-, movementForce(4000)
-, explosionRadius(200)
-, explosionDamage(40)
+	: materialInstance(nullptr)
+	, bUseAccelerationChange(false)
+	, requiredDistanceToTarget(50)
+	, maxSpeed(500)
+	, movementForce(4000)
+	, explosionRadius(200)
+	, explosionDamage(40)
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	meshComponent = CreateDefaultSubobject<UStaticMeshComponent>("MeshComponent");
@@ -31,13 +32,21 @@ ASTrackerBot::ASTrackerBot()
 
 	healthComponent = CreateDefaultSubobject<USHealthComponent>("HealthComponent");
 	healthComponent->OnHealthChanged.AddDynamic(this, &ASTrackerBot::HandleHealthChanged);
+
+	sphereComponent = CreateDefaultSubobject<USphereComponent>("SphereComponent");
+	sphereComponent->SetupAttachment(meshComponent);
+	sphereComponent->SetSphereRadius(199);
+	sphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly); // Don't let the sphere component simulate any physics
+	sphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	sphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
 }
 
 // Called when the game starts or when spawned
 void ASTrackerBot::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	currentSegmentEndPoint = GetActorLocation();
 	currentSegmentBeginPoint = GetActorLocation();
 	currentSegmentLength = 0;
@@ -73,31 +82,11 @@ void ASTrackerBot::Tick(float DeltaTime)
 	}
 }
 
-FVector ASTrackerBot::GetNextPathPoint()
-{
-	auto player = UGameplayStatics::GetPlayerPawn(this, 0);
-
-	if (player)
-	{
-		// Find path
-		auto path = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), player);
-
-		// Return next point excluding it self
-		if (path->PathPoints.Num() > 0)
-		{
-			return path->PathPoints[1];
-		}
-	}
-
-	// Failed to get next point
-	return GetActorLocation();
-}
-
 void ASTrackerBot::HandleHealthChanged(USHealthComponent* HealthComponent, float CurrentHealth, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
 	if (CurrentHealth <= 0)
 	{
-		SelfDestruct();
+		Explode();
 	}
 
 	if (materialInstance == nullptr)
@@ -107,7 +96,19 @@ void ASTrackerBot::HandleHealthChanged(USHealthComponent* HealthComponent, float
 		materialInstance->SetScalarParameterValue(materialParamLastTimeDamageTaken, GetWorld()->TimeSeconds);
 }
 
-void ASTrackerBot::SelfDestruct()
+void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	auto playerPawn = Cast<ASCharacter>(OtherActor);
+
+	if (playerPawn)
+	{
+		Explode();
+	}
+}
+
+void ASTrackerBot::Explode()
 {
 	if (bExploded)
 	{
@@ -131,4 +132,24 @@ void ASTrackerBot::SelfDestruct()
 	DrawDebugSphere(GetWorld(), GetActorLocation(), explosionRadius, 12, FColor::Red, false, 1);
 
 	Destroy();
+}
+
+FVector ASTrackerBot::GetNextPathPoint()
+{
+	auto player = UGameplayStatics::GetPlayerPawn(this, 0);
+
+	if (player)
+	{
+		// Find path
+		auto path = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), player);
+
+		// Return next point excluding it self
+		if (path->PathPoints.Num() > 0)
+		{
+			return path->PathPoints[1];
+		}
+	}
+
+	// Failed to get next point
+	return GetActorLocation();
 }
