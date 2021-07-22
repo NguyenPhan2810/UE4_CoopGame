@@ -23,14 +23,17 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	SetRootComponent(StaticMeshComponent);
 
 	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>("RadialForceComponent");
-	RadialForceComponent->SetupAttachment(StaticMeshComponent);
+	RadialForceComponent->SetupAttachment(RootComponent);
 	RadialForceComponent->Radius = 350;
+	RadialForceComponent->ImpulseStrength = 21000;
 	RadialForceComponent->bIgnoreOwningActor = true; // Ignore self
 	RadialForceComponent->bImpulseVelChange = false; 
 	RadialForceComponent->bAutoActivate = false; // Prevent component from ticking, use FireImpulse() instead
 
 	SetReplicates(true);
 	SetReplicateMovement(true);
+	MinNetUpdateFrequency = 60;
+	MinNetUpdateFrequency = 30;
 }
 
 // Called when the game starts or when spawned

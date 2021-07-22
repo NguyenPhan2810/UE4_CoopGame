@@ -19,19 +19,17 @@ ASGrenade::ASGrenade()
 	ExplosionTimer = 1; // second
 
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMesh");
+	SetRootComponent(MeshComponent);
 	MeshComponent->SetSimulatePhysics(true);
 	MeshComponent->SetMassOverrideInKg(NAME_None, 1);
-	//MeshComponent->SetCollisionObjectType(ECC_PhysicsBody);
-	//SetRootComponent(MeshComponent);
 
 	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>("RadialForceComponent");
-	//RadialForceComponent->SetupAttachment(MeshComponent);
-	RadialForceComponent->Radius = 200;
-	RadialForceComponent->ImpulseStrength = 2000;
+	RadialForceComponent->SetupAttachment(RootComponent);
+	RadialForceComponent->Radius = 300;
+	RadialForceComponent->ImpulseStrength = 15000;
 	RadialForceComponent->bIgnoreOwningActor = true; // Ignore self
 	RadialForceComponent->bImpulseVelChange = false;
 	RadialForceComponent->bAutoActivate = false; // Prevent component from ticking, use FireImpulse() instead
-
 
 	ExplodeOnImpact = true;
 }
