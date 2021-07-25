@@ -21,11 +21,25 @@ protected:
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+	virtual void Respawn();
+
 protected:
 	UPROPERTY(VisibleAnywhere, Category = Components)
 	class USphereComponent* sphereComponent;
 	
 	UPROPERTY(VisibleAnywhere, Category = Components)
 	class UDecalComponent* decalComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = PickupActor)
+	TSubclassOf<class ASPowerupActor> powerupClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = PickupActor)
+	FVector spawnLocationOffset;
+
+	class ASPowerupActor* powerupInstance;
+
+	float cooldownDuration;
+
+	FTimerHandle timerHandle_RespawnTimer;
 public:	
 };
