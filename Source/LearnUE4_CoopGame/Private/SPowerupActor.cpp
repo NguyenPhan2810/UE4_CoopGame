@@ -37,14 +37,14 @@ void ASPowerupActor::OnTickPowerup()
 		OnPowerupExpired();
 
 		// Delete timer
-		GetWorld()->GetTimerManager().ClearTimer(timerHandle_PowerupTick);
+		GetWorldTimerManager().ClearTimer(timerHandle_PowerupTick);
 	}
 }
 
 void ASPowerupActor::ActivatePowerup()
 {
 	if (powerUpInterval > 0)
-		GetWorld()->GetTimerManager().SetTimer(timerHandle_PowerupTick, this, &ASPowerupActor::OnTickPowerup, powerUpInterval, true, 0);
+		GetWorldTimerManager().SetTimer(timerHandle_PowerupTick, this, &ASPowerupActor::OnTickPowerup, powerUpInterval, true, 0);
 	else
 		OnTickPowerup();
 }

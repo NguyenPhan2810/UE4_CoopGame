@@ -21,15 +21,15 @@ protected:
 
 public:	
 	UFUNCTION(BlueprintImplementableEvent, Category = Powerups)
-	virtual void OnPowerupActivated();
+	void OnPowerupActivated();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Powerups)
-	virtual void OnPowerupTicking();
+	void OnPowerupTicking();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Powerups)
-	virtual void OnPowerupExpired();
+	void OnPowerupExpired();
 
-	UFUNCTION();
+	UFUNCTION()
 	virtual void OnTickPowerup();
 
 	virtual void ActivatePowerup();
