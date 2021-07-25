@@ -22,10 +22,10 @@ protected:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 protected:
-	UPROPERTY(VisibleAnywhere, category = Components)
+	UPROPERTY(VisibleAnywhere, Category = Components)
 	class USphereComponent* sphereComponent;
 	
-	UPROPERTY(VisibleAnywhere, category = Components)
+	UPROPERTY(VisibleAnywhere, Category = Components)
 	class UDecalComponent* decalComponent;
 public:	
 };
