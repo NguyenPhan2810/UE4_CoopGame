@@ -4,11 +4,15 @@
 #include "SGameMode.h"
 #include "Components/SHealthComponent.h"
 
+#include "SGameState.h"
+
 ASGameMode::ASGameMode()
 : timeBetweenWave(2)
 {	
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.TickInterval = 1;
+
+	GameStateClass = ASGameState::StaticClass();
 }
 
 void ASGameMode::StartPlay()
@@ -27,6 +31,8 @@ void ASGameMode::Tick(float DeltaTime)
 
 void ASGameMode::StartWave()
 {
+	SetWaveState(EWaveState::WaveInProgress);
+
 	waveCount++;
 
 	numberOfBotsToSpawn = waveCount * 2;
@@ -37,11 +43,13 @@ void ASGameMode::StartWave()
 
 void ASGameMode::EndWave()
 {
+	SetWaveState(EWaveState::WaitingToComplete);
 	GetWorldTimerManager().ClearTimer(timerHandle_BotSpawner);
 }
 
 void ASGameMode::PrepareForNextwave()
 {
+	SetWaveState(EWaveState::WaitingToStart); 
 	GetWorldTimerManager().SetTimer(timerHandle_PrepareForNextWave, this, &ASGameMode::StartWave, timeBetweenWave);
 }
 
@@ -85,6 +93,7 @@ void ASGameMode::CheckWaveState()
 
 	if (!isAnyBotsAlive)
 	{
+		SetWaveState(EWaveState::WaveComplete);
 		PrepareForNextwave();
 	}
 }
@@ -119,6 +128,19 @@ void ASGameMode::GameOver()
 {
 	EndWave();
 
+	SetWaveState(EWaveState::GameOver);
+
 	// @TODO: do something to end the match and show 'GameOver' to the player
 	UE_LOG(LogTemp, Log, L"Gameover");
+}
+
+// This function will be called only in server, waveState variable then replicates to clients
+void ASGameMode::SetWaveState(EWaveState newState)
+{
+	auto gameState = GetGameState<ASGameState>();
+
+	if (ensureAlways(gameState))
+	{
+		gameState->SetWaveState(newState);
+	}
 }
