@@ -4,6 +4,7 @@
 #include "Components/SHealthComponent.h"
 #include <Delegates/Delegate.h>
 #include <Net/UnrealNetwork.h>
+#include "SGameMode.h"
 
 // Sets default values for this component's properties
 USHealthComponent::USHealthComponent()
@@ -44,6 +45,12 @@ void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 
 	// Board cast event
 	OnHealthChanged.Broadcast(this, health, Damage, DamageType, InstigatedBy, DamageCauser);
+
+	auto gameMode = GetWorld()->GetAuthGameMode<ASGameMode>();
+	if (gameMode && health <= 0) // Only true in server
+	{
+		gameMode->OnActorKilled.Broadcast(GetOwner(), DamageCauser, InstigatedBy);
+	}
 }
 
 void USHealthComponent::Heal(float healAmount)

@@ -8,6 +8,8 @@
 
 enum class EWaveState : uint8;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnActorKilled, AActor*, victimActor, AActor*, killerActor, AController*, killerController);
+
 /**
  * 
  */
@@ -51,4 +53,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = GameMode)
 	float timeBetweenWave;
+
+public:
+	UPROPERTY(BlueprintAssignable, Category = GameMode)
+	FOnActorKilled OnActorKilled;
 };
