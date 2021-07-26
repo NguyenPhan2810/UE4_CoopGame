@@ -25,12 +25,22 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = Powerups)
 	void OnPowerupExpired();
 
+	// This function will be called both on client and server
+	UFUNCTION(BlueprintImplementableEvent, Category = Powerups)
+	void OnPowerupStateChanged(bool newState);
+
 	UFUNCTION()
 	virtual void OnTickPowerup();
 
 	virtual void ActivatePowerup();
 
+	UFUNCTION()
+	void OnRep_PowerupActive();
+
 protected: // Member variables
+
+	UPROPERTY(ReplicatedUsing = OnRep_PowerupActive)
+	bool isPowerupActive;
 
 	// Seconds between powerup ticks
 	UPROPERTY(EditDefaultsOnly, Category = Powerups)

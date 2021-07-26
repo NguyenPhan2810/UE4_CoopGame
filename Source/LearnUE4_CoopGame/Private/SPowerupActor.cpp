@@ -2,14 +2,16 @@
 
 
 #include "SPowerupActor.h"
+#include <Net/UnrealNetwork.h>
 
 // Sets default values
 ASPowerupActor::ASPowerupActor()
 : powerUpInterval(0)
 , totalNumberOfTicks(1) // Initially only tick once
 , ticksCount(0)
+, isPowerupActive(false)
 {
-
+	SetReplicates(true);
 }
 
 
@@ -25,6 +27,12 @@ void ASPowerupActor::OnTickPowerup()
 		// last tick ticked so the OnExpired() is called
 		OnPowerupExpired();
 
+		// Replicates powerup state to clients
+		isPowerupActive = true;
+
+		// Manually call the replication function on server it self
+		OnRep_PowerupActive();
+
 		// Delete timer
 		GetWorldTimerManager().ClearTimer(timerHandle_PowerupTick);
 		return;
@@ -35,6 +43,9 @@ void ASPowerupActor::OnTickPowerup()
 	if (ticksCount == 1)
 	{
 		OnPowerupActivated();
+		
+		isPowerupActive = true;
+		OnRep_PowerupActive();
 	}
 
 	OnPowerupTicking();
@@ -48,3 +59,15 @@ void ASPowerupActor::ActivatePowerup()
 		OnTickPowerup();
 }
 
+void ASPowerupActor::OnRep_PowerupActive()
+{
+	OnPowerupStateChanged(isPowerupActive);
+}
+
+
+void ASPowerupActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASPowerupActor, isPowerupActive);
+}
