@@ -15,10 +15,6 @@ public:
 	// Sets default values for this actor's properties
 	ASPowerupActor();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;	
-
 public:	
 	UFUNCTION(BlueprintImplementableEvent, Category = Powerups)
 	void OnPowerupActivated();

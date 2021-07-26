@@ -10,14 +10,8 @@ ASPowerupActor::ASPowerupActor()
 , ticksCount(0)
 {
 
-
 }
 
-// Called when the game starts or when spawned
-void ASPowerupActor::BeginPlay()
-{
-	Super::BeginPlay();
-}
 
 // Tick at the begin of each interval
 // For example: max number of ticks is 2 and tick interval is 0.2 then 
