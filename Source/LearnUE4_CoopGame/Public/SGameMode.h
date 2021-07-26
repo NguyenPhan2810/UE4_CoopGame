@@ -16,4 +16,33 @@ class LEARNUE4_COOPGAME_API ASGameMode : public AGameModeBase
 	
 public:
 	ASGameMode();
+
+protected:
+	void StartWave();
+	void EndWave();
+	void PrepareForNextwave();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = GameMode)
+	void SpawnNewBot();
+
+	void SpawnBotTimerElapsed();
+
+	void CheckWaveState();
+
+public:
+	virtual void StartPlay() override;
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+protected:
+	FTimerHandle timerHandle_BotSpawner;
+	FTimerHandle timerHandle_PrepareForNextWave;
+
+	int32 numberOfBotsToSpawn;
+
+	int32 waveCount;
+
+	UPROPERTY(EditDefaultsOnly, Category = GameMode)
+	float timeBetweenWave;
 };
