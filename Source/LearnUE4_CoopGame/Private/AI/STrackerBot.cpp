@@ -228,7 +228,17 @@ void ASTrackerBot::PlayStartExplosionEffects()
 
 FVector ASTrackerBot::GetNextPathPoint()
 {
-	auto player = UGameplayStatics::GetPlayerCharacter(this, 0);
+	ACharacter* player = nullptr;
+
+	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+	{
+		APlayerController* PlayerController = Iterator->Get();
+		if (PlayerController)
+		{
+			player = PlayerController->GetPawn<ACharacter>();
+			break;
+		}
+	}
 
 	if (player)
 	{
