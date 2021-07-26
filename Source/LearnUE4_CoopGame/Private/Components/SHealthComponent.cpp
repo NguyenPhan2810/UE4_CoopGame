@@ -21,7 +21,6 @@ void USHealthComponent::BeginPlay()
 	Super::BeginPlay();
 
 	health = defaultMaxHealth;
-	OnHealthChanged.Broadcast(this, health, 0, nullptr, nullptr, nullptr);
 	
 	// Subcribe it self to take damage event of the owner
 	auto owner = GetOwner();
