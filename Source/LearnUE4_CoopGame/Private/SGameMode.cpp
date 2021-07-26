@@ -52,6 +52,9 @@ void ASGameMode::EndWave()
 void ASGameMode::PrepareForNextwave()
 {
 	SetWaveState(EWaveState::WaitingToStart); 
+
+	RespawnDeadPlayers();
+
 	GetWorldTimerManager().SetTimer(timerHandle_PrepareForNextWave, this, &ASGameMode::StartWave, timeBetweenWave);
 }
 
@@ -134,6 +137,19 @@ void ASGameMode::GameOver()
 
 	// @TODO: do something to end the match and show 'GameOver' to the player
 	UE_LOG(LogTemp, Log, L"Gameover");
+}
+
+void ASGameMode::RespawnDeadPlayers()
+{
+	for (auto it = GetWorld()->GetPlayerControllerIterator(); it; ++it)
+	{
+		auto playerController = it->Get();
+
+		if (playerController && playerController->GetPawn() == nullptr)
+		{
+			RestartPlayer(playerController);
+		}
+	}
 }
 
 // This function will be called only in server, waveState variable then replicates to clients

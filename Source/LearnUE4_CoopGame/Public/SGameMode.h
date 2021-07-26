@@ -34,7 +34,7 @@ protected:
 	void CheckWaveState();
 	void CheckAnyPlayerAlive();
 	void GameOver();
-
+	void RespawnDeadPlayers();
 	void SetWaveState(EWaveState newState);
 
 public:
