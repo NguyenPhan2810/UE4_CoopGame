@@ -28,6 +28,8 @@ protected:
 	void SpawnBotTimerElapsed();
 
 	void CheckWaveState();
+	void CheckAnyPlayerAlive();
+	void GameOver();
 
 public:
 	virtual void StartPlay() override;
