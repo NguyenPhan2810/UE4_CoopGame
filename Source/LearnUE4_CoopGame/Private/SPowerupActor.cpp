@@ -39,20 +39,16 @@ void ASPowerupActor::OnTickPowerup()
 	}
 
 	ticksCount++;
-
-	if (ticksCount == 1)
-	{
-		OnPowerupActivated();
-		
-		isPowerupActive = true;
-		OnRep_PowerupActive();
-	}
-
 	OnPowerupTicking();
 }
 
-void ASPowerupActor::ActivatePowerup()
+void ASPowerupActor::ActivatePowerup(AActor* actorActivated)
 {
+	OnPowerupActivated(actorActivated);
+
+	isPowerupActive = true;
+	OnRep_PowerupActive();
+
 	if (powerUpInterval > 0)
 		GetWorldTimerManager().SetTimer(timerHandle_PowerupTick, this, &ASPowerupActor::OnTickPowerup, powerUpInterval, true, 0);
 	else

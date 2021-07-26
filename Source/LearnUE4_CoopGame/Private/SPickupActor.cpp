@@ -42,7 +42,7 @@ void ASPickupActor::NotifyActorBeginOverlap(AActor* OtherActor)
 	{
 		if (powerupInstance)
 		{
-			powerupInstance->ActivatePowerup();
+			powerupInstance->ActivatePowerup(OtherActor);
 			powerupInstance = nullptr;
 
 			// Respawn powerup

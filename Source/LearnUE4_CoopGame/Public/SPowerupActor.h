@@ -17,7 +17,7 @@ public:
 
 public:	
 	UFUNCTION(BlueprintImplementableEvent, Category = Powerups)
-	void OnPowerupActivated();
+	void OnPowerupActivated(AActor* actorActivated);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Powerups)
 	void OnPowerupTicking();
@@ -32,7 +32,7 @@ public:
 	UFUNCTION()
 	virtual void OnTickPowerup();
 
-	virtual void ActivatePowerup();
+	virtual void ActivatePowerup(AActor* actorActivated);
 
 	UFUNCTION()
 	void OnRep_PowerupActive();
