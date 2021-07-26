@@ -18,10 +18,14 @@ public:
 	// Sets default values for this component's properties
 	USHealthComponent();
 
+public:
+	UFUNCTION(BlueprintCallable, Category = HealthComponent)
+	void Heal(float healAmount);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
+	 
 	UFUNCTION()
 	virtual void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
@@ -30,10 +34,10 @@ protected:
 
 protected:
 	UPROPERTY(ReplicatedUsing = OnRep_Health, BlueprintReadOnly, Category = HealthComponent)
-	float Health;
+	float health;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthComponent)
-	float DefaultMaxHealth;
+	float defaultMaxHealth;
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")

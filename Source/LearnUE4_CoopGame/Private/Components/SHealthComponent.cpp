@@ -8,19 +8,18 @@
 // Sets default values for this component's properties
 USHealthComponent::USHealthComponent()
 {
-	DefaultMaxHealth = 100;
-	Health = DefaultMaxHealth;
+	defaultMaxHealth = 100;
+	health = defaultMaxHealth;
 
 	SetIsReplicatedByDefault(true);
 }
-
 
 // Called when the game starts
 void USHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Health = DefaultMaxHealth;
+	health = defaultMaxHealth;
 
 	
 	// Subcribe it self to take damage event of the owner
@@ -35,29 +34,41 @@ void USHealthComponent::BeginPlay()
 
 void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-	if (Damage == 0 || Health <= 0)
+	if (Damage == 0 || health <= 0)
 	{
 		return;
 	}
 
 	// Update health clamped
-	Health = FMath::Clamp(Health - Damage, 0.0f, DefaultMaxHealth);
+	health = FMath::Clamp(health - Damage, 0.0f, defaultMaxHealth);
 
 	// Board cast event
-	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);
+	OnHealthChanged.Broadcast(this, health, Damage, DamageType, InstigatedBy, DamageCauser);
+}
+
+void USHealthComponent::Heal(float healAmount)
+{
+	if (healAmount <= 0 || health <= 0)
+	{
+		return;
+	}
+
+	health = FMath::Clamp(health + healAmount, 0.0f, defaultMaxHealth);
+
+	OnHealthChanged.Broadcast(this, health, -healAmount, nullptr, nullptr, nullptr);
 }
 
 void USHealthComponent::OnRep_Health(float OldHealth)
 {
-	float damage = Health - OldHealth;
+	float damage = health - OldHealth;
 
 	// Board cast event in clients
-	OnHealthChanged.Broadcast(this, Health, damage, nullptr, nullptr, nullptr);
+	OnHealthChanged.Broadcast(this, health, damage, nullptr, nullptr, nullptr);
 }
 
 void USHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(USHealthComponent, Health);
+	DOREPLIFETIME(USHealthComponent, health);
 }
