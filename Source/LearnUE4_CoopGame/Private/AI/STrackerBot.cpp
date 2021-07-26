@@ -89,7 +89,7 @@ void ASTrackerBot::Tick(float DeltaTime)
 		{
 			auto distanceToTarget = (currentSegmentEndPoint - GetActorLocation()).Size();
 
-			if (distanceToTarget < requiredDistanceToTarget)
+			if (distanceToTarget < requiredDistanceToTarget || (currentSegmentEndPoint - currentSegmentBeginPoint).IsNearlyZero())
 			{
 				// Find new target
 				currentSegmentEndPoint = GetNextPathPoint();
@@ -236,7 +236,7 @@ FVector ASTrackerBot::GetNextPathPoint()
 		auto path = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), player);
 
 		// Return next point excluding it self
-		if (path->PathPoints.Num() > 0)
+		if (path && path->PathPoints.Num() > 0)
 		{
 			return path->PathPoints[1];
 		}
