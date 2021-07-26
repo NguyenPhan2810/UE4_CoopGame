@@ -33,11 +33,12 @@ protected:
 	UPROPERTY(EditInstanceOnly, Category = PickupActor)
 	TSubclassOf<class ASPowerupActor> powerupClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = PickupActor)
+	UPROPERTY(EditInstanceOnly, Category = PickupActor)
 	FVector spawnLocationOffset;
 
 	class ASPowerupActor* powerupInstance;
 
+	UPROPERTY(EditInstanceOnly, Category = PickupActor)
 	float cooldownDuration;
 
 	FTimerHandle timerHandle_RespawnTimer;
