@@ -146,8 +146,9 @@ void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (GetLocalRole() == ROLE_Authority)
 	{
 		auto playerPawn = Cast<ASCharacter>(OtherActor);
+		
 
-		if (playerPawn)
+		if (playerPawn && playerPawn->IsPlayerControlled())
 		{
 			StartExplosionSequence();
 		}
@@ -177,7 +178,9 @@ void ASTrackerBot::Explode()
 	// Set life span instead of destroy the actor to let the replication occurs
 
 	SetActorTickEnabled(false);
-	SetActorHiddenInGame(true);
+	meshComponent->SetVisibility(false, true);
+	meshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	sphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 
 	SetLifeSpan(2);
 }

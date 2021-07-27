@@ -4,6 +4,11 @@
 #include "SGameState.h"
 #include <Net/UnrealNetwork.h>
 
+ASGameState::ASGameState()
+{
+
+}
+
 void ASGameState::OnRep_WaveState(EWaveState oldState)
 {
 	WaveStateChanged(oldState, waveState);

@@ -20,6 +20,7 @@ ASGameMode::ASGameMode()
 void ASGameMode::StartPlay()
 {
 	Super::StartPlay();
+
 }
 
 void ASGameMode::Tick(float DeltaTime)
@@ -37,8 +38,8 @@ void ASGameMode::StartWave()
 
 	waveCount++;
 
-	UE_LOG(LogTemp, Warning, L"Number of bots always zero");
-	numberOfBotsToSpawn = waveCount * 0;
+	//UE_LOG(LogTemp, Warning, L"Number of bots always zero");
+	numberOfBotsToSpawn = waveCount * 1.3;
 
 	// SpawnNewBot each 1 second
 	GetWorldTimerManager().SetTimer(timerHandle_BotSpawner, this, &ASGameMode::SpawnBotTimerElapsed, 0.2, true);
@@ -61,6 +62,7 @@ void ASGameMode::PrepareForNextwave()
 
 void ASGameMode::SpawnBotTimerElapsed()
 {
+	UE_LOG(LogTemp, Warning, L"Number of bots: %d", numberOfBotsToSpawn);
 	if (numberOfBotsToSpawn <= 0)
 	{
 		EndWave();
@@ -100,7 +102,8 @@ void ASGameMode::CheckWaveState()
 
 	if (!isAnyBotsAlive)
 	{
-		SetWaveState(EWaveState::WaveComplete);
+		if (waveCount > 0)
+			SetWaveState(EWaveState::WaveComplete);
 		PrepareForNextwave();
 	}
 }

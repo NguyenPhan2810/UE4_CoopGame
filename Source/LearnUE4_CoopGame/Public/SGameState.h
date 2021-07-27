@@ -28,7 +28,9 @@ UCLASS()
 class LEARNUE4_COOPGAME_API ASGameState : public AGameStateBase
 {
 	GENERATED_BODY()
-	
+public:
+	ASGameState();
+
 
 protected:
 	UFUNCTION()
