@@ -59,6 +59,8 @@ void ASCharacter::BeginPlay()
 
 	// Register event of health change
 	HealthComponent->OnHealthChanged.AddDynamic(this, &ASCharacter::OnHealthChanged);
+
+	HandleSpawnWeapons(1);
 }
 
 // Called every frame
@@ -67,10 +69,13 @@ void ASCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// Spawn Weapon
-	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::One) && RifleBP)
-		HandleSpawnWeapons(1);
-	else if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::Two) && GrenadeLauncherBP)
-		HandleSpawnWeapons(2);
+	if (IsPlayerControlled())
+	{
+		if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::One) && RifleBP)
+			HandleSpawnWeapons(1);
+		else if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::Two) && GrenadeLauncherBP)
+			HandleSpawnWeapons(2);
+	}
 
 	// Aim down sight
 

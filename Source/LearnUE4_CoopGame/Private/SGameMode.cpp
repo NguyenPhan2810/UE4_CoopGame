@@ -37,7 +37,8 @@ void ASGameMode::StartWave()
 
 	waveCount++;
 
-	numberOfBotsToSpawn = waveCount * 2;
+	UE_LOG(LogTemp, Warning, L"Number of bots always zero");
+	numberOfBotsToSpawn = waveCount * 0;
 
 	// SpawnNewBot each 1 second
 	GetWorldTimerManager().SetTimer(timerHandle_BotSpawner, this, &ASGameMode::SpawnBotTimerElapsed, 0.2, true);
@@ -60,14 +61,15 @@ void ASGameMode::PrepareForNextwave()
 
 void ASGameMode::SpawnBotTimerElapsed()
 {
-	SpawnNewBot();
-
-	numberOfBotsToSpawn--;
-
 	if (numberOfBotsToSpawn <= 0)
 	{
 		EndWave();
+		return;
 	}
+
+	SpawnNewBot();
+
+	numberOfBotsToSpawn--;
 }
 
 void ASGameMode::CheckWaveState()
