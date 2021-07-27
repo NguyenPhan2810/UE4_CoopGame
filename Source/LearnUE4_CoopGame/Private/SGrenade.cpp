@@ -48,7 +48,7 @@ void ASGrenade::Explode()
 		ignoredActor.Add(this);
 
 		UGameplayStatics::ApplyRadialDamage(GetWorld(), damageAmount, GetActorLocation(), RadialForceComponent->Radius,
-			DamageType, ignoredActor, this, GetOwner()->GetInstigatorController());
+			DamageType, ignoredActor, GetOwner(), GetOwner()->GetInstigatorController());
 
 		RadialForceComponent->FireImpulse();
 
