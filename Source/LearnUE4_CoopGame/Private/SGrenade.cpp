@@ -12,11 +12,12 @@
 
 // Sets default values
 ASGrenade::ASGrenade()
+: damageAmount(100)
+, ExplodeOnImpact(true)
+, ExplosionTimer(1) // second
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	ExplosionTimer = 1; // second
 
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMesh");
 	SetRootComponent(MeshComponent);
@@ -30,8 +31,6 @@ ASGrenade::ASGrenade()
 	RadialForceComponent->bIgnoreOwningActor = true; // Ignore self
 	RadialForceComponent->bImpulseVelChange = false;
 	RadialForceComponent->bAutoActivate = false; // Prevent component from ticking, use FireImpulse() instead
-
-	ExplodeOnImpact = true;
 }
 
 // Called when the game starts or when spawned
@@ -49,8 +48,8 @@ void ASGrenade::Explode()
 		TArray<AActor*> ignoredActor;
 		ignoredActor.Add(this);
 
-		UGameplayStatics::ApplyRadialDamage(GetWorld(), 20, GetActorLocation(), RadialForceComponent->Radius,
-			DamageType, ignoredActor, this, GetOwner()->GetInstigatorController(), true);
+		UGameplayStatics::ApplyRadialDamage(GetWorld(), damageAmount, GetActorLocation(), RadialForceComponent->Radius,
+			DamageType, ignoredActor, this, GetOwner()->GetInstigatorController());
 
 		RadialForceComponent->FireImpulse();
 

@@ -40,6 +40,9 @@ protected:
 	TSubclassOf<UDamageType> DamageType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
+	float damageAmount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	class UParticleSystem* ExplodeEffect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)

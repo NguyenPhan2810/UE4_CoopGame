@@ -15,6 +15,13 @@ public:
 	// Sets default values for this character's properties
 	ASCharacter();
 
+public:
+	// Fire
+	UFUNCTION(BlueprintCallable, Category = Player)
+	void BeginFire();
+
+	UFUNCTION(BlueprintCallable, Category = Player)
+	void EndFire();
 
 protected:
 	// Called when the game starts or when spawned
@@ -27,10 +34,6 @@ protected:
 	// Crouch
 	void BeginCrouch();
 	void EndCrouch();
-
-	// Fire
-	void BeginFire();
-	void EndFire();
 
 	// Aim down sight
 	void BeginAimDownSight();
