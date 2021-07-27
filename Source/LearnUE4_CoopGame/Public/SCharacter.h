@@ -39,6 +39,8 @@ protected:
 	void BeginAimDownSight();
 	void EndAimDownSight();
 
+	void ControlPitch();
+
 	// Spawn weapons as requested
 	UFUNCTION(Server, Reliable, WithValidation)
 	virtual void HandleSpawnWeapons(int weaponType);
