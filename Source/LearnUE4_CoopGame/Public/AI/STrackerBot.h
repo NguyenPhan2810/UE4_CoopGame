@@ -112,6 +112,7 @@ protected: // Variables with UPROPERTIES
 	bool bExplosionSequenceStarted;
 
 protected: // Normal variable
+	AActor* currentChasingActor;
 	
 	// The target point to reach
 	FVector currentSegmentEndPoint;
@@ -120,6 +121,7 @@ protected: // Normal variable
 	FVector currentSegmentBeginPoint;
 
 	FTimerHandle timerHandle_ExplosionSequence;
+	FTimerHandle timerHandle_RefreshPath;
 
 	float currentSegmentLength;
 

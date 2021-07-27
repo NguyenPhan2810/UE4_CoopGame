@@ -29,6 +29,7 @@ ASTrackerBot::ASTrackerBot()
 , selfDamageDamage(20)
 , selfDamageInteral(0.3)
 , currentSegmentLength(0)
+, currentChasingActor(nullptr)
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -89,7 +90,9 @@ void ASTrackerBot::Tick(float DeltaTime)
 		{
 			auto distanceToTarget = (currentSegmentEndPoint - GetActorLocation()).Size();
 
-			if (distanceToTarget < requiredDistanceToTarget || (currentSegmentEndPoint - currentSegmentBeginPoint).IsNearlyZero())
+			if (distanceToTarget < requiredDistanceToTarget 
+				|| (currentSegmentEndPoint - currentSegmentBeginPoint).IsNearlyZero() 
+				|| currentChasingActor == nullptr)
 			{
 				// Find new target
 				currentSegmentEndPoint = GetNextPathPoint();
@@ -145,8 +148,12 @@ void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	if (GetLocalRole() == ROLE_Authority)
 	{
+		if (OtherActor != currentChasingActor)
+		{
+			return;
+		}
+
 		auto playerPawn = Cast<ASCharacter>(OtherActor);
-		
 
 		if (playerPawn && playerPawn->IsPlayerControlled())
 		{
@@ -232,31 +239,38 @@ void ASTrackerBot::PlayStartExplosionEffects()
 
 FVector ASTrackerBot::GetNextPathPoint()
 {
-	ACharacter* player = nullptr;
+	ACharacter* targetPlayer = nullptr;
+	float lowestDistanceToTarget = 100000;
 
 	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
 	{
-		APlayerController* PlayerController = Iterator->Get();
-		if (PlayerController)
+		APlayerController* playerController = Iterator->Get();
+		if (ensure(playerController) && playerController->GetCharacter())
 		{
-			player = PlayerController->GetPawn<ACharacter>();
-			break;
+			auto distance = FVector::Distance(playerController->GetCharacter()->GetActorLocation(), GetActorLocation());
+			if (distance < lowestDistanceToTarget)
+			{
+				lowestDistanceToTarget = distance;
+				targetPlayer = playerController->GetCharacter();
+			}
 		}
 	}
 
-	if (player)
+	if (targetPlayer)
 	{
 		// Find path
-		auto path = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), player);
+		auto path = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), targetPlayer);
 
 		// Return next point excluding it self
 		if (path && path->PathPoints.Num() > 0)
 		{
+			currentChasingActor = targetPlayer;
 			return path->PathPoints[1];
 		}
 	}
 
 	// Failed to get next point
+	currentChasingActor = nullptr;
 	return GetActorLocation();
 }
 
