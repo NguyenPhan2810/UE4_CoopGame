@@ -157,6 +157,7 @@ void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 
 void ASTrackerBot::Explode()
 {
+
 	if (GetLocalRole() != ROLE_Authority)
 		return;
 
@@ -175,13 +176,8 @@ void ASTrackerBot::Explode()
 
 	DrawDebugSphere(GetWorld(), GetActorLocation(), explosionRadius, 12, FColor::Red, false, 1);
 
+
 	// Set life span instead of destroy the actor to let the replication occurs
-
-	SetActorTickEnabled(false);
-	meshComponent->SetVisibility(false, true);
-	meshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-	sphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-
 	SetLifeSpan(2);
 }
 
@@ -216,6 +212,11 @@ void ASTrackerBot::PlayExplosionEffects()
 
 	if (explosionSound)
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), explosionSound, GetActorLocation());
+
+	// Disable visual and collision
+	meshComponent->SetVisibility(false, true);
+	meshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	sphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 }
 
 void ASTrackerBot::PlayStartExplosionEffects()

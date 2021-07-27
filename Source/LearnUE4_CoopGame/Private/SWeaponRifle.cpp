@@ -65,7 +65,7 @@ void ASWeaponRifle::Fire()
 
 			// Apply damage
 			UGameplayStatics::ApplyPointDamage(hitActor, actualDamage, traceDirection, hitResult,
-				owner->GetInstigatorController(), this, DamageType);			
+				owner->GetInstigatorController(), owner, DamageType);			
 		}
 
 		// Draw debug

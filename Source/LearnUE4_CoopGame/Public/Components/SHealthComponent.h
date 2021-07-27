@@ -42,6 +42,13 @@ protected:
 	float defaultMaxHealth;
 
 public:
-	UPROPERTY(BlueprintAssignable, Category = "Events")
+	UPROPERTY(BlueprintAssignable, Category = Events)
 	FOnHealthChangedSignature OnHealthChanged;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = HealthComponent)
+	uint8 teamIndex;
+
+public:
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = HealthComponent)
+	static bool IsSameTeam(const AActor* actorA, const AActor* actorB);
 };

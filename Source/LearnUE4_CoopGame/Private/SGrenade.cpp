@@ -22,7 +22,6 @@ ASGrenade::ASGrenade()
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMesh");
 	SetRootComponent(MeshComponent);
 	MeshComponent->SetSimulatePhysics(true);
-	MeshComponent->SetMassOverrideInKg(NAME_None, 1);
 
 	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>("RadialForceComponent");
 	RadialForceComponent->SetupAttachment(RootComponent);

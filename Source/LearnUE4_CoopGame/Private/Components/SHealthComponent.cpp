@@ -8,10 +8,10 @@
 
 // Sets default values for this component's properties
 USHealthComponent::USHealthComponent()
+: defaultMaxHealth(100)
+, health(100)
+, teamIndex(0)
 {
-	defaultMaxHealth = 100;
-	health = defaultMaxHealth;
-
 	SetIsReplicatedByDefault(true);
 }
 
@@ -35,6 +35,11 @@ void USHealthComponent::BeginPlay()
 void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
 	if (Damage == 0 || health <= 0)
+	{
+		return;
+	}
+
+	if (DamageCauser != DamagedActor && IsSameTeam(DamagedActor, DamageCauser))
 	{
 		return;
 	}
@@ -75,6 +80,24 @@ void USHealthComponent::OnRep_Health(float OldHealth)
 
 	// Board cast event in clients
 	OnHealthChanged.Broadcast(this, health, damage, nullptr, nullptr, nullptr);
+}
+
+bool USHealthComponent::IsSameTeam(const AActor* actorA, const AActor* actorB)
+{
+	if (actorA == nullptr || actorB == nullptr)
+	{
+		return true; // assume same team
+	}
+
+	auto healthCompA = actorA->FindComponentByClass<USHealthComponent>();
+	auto healthCompB = actorB->FindComponentByClass<USHealthComponent>();
+
+	if (healthCompA == nullptr || healthCompB == nullptr)
+	{
+		return true; // assume same team
+	}
+
+	return healthCompA->teamIndex == healthCompB->teamIndex;
 }
 
 void USHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

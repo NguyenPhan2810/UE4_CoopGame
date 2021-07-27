@@ -19,7 +19,6 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
 	StaticMeshComponent->SetSimulatePhysics(true);
 	StaticMeshComponent->SetCollisionObjectType(ECC_PhysicsBody);
-	StaticMeshComponent->SetMassOverrideInKg(NAME_None, 30);
 	SetRootComponent(StaticMeshComponent);
 
 	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>("RadialForceComponent");
