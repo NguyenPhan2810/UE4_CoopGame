@@ -29,6 +29,13 @@ ASCharacter::ASCharacter()
 	// Prevent capsule from blocking collision event on Weapon channel
 	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
 
+	// Setup components
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
+	SpringArmComponent->SetupAttachment(RootComponent);
+	SpringArmComponent->bUsePawnControlRotation = true;
+
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
+	CameraComponent->SetupAttachment(SpringArmComponent);
 
 	HealthComponent = CreateDefaultSubobject<USHealthComponent>("HealthComponent");
 
@@ -46,8 +53,7 @@ ASCharacter::ASCharacter()
 void ASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	CameraComponent = FindComponentByClass<UCameraComponent>();
+	
 	CurrentFov = DefaultFov;
 	CameraComponent->SetFieldOfView(CurrentFov);
 
@@ -97,7 +103,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASCharacter::Jump);
 
 	// Mouse look
-	PlayerInputComponent->BindAxis("LookUp", this, &ASCharacter::ControlPitch);
+	PlayerInputComponent->BindAxis("LookUp", this, &ASCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Turn", this, &ASCharacter::AddControllerYawInput);
 
 	// Fire
@@ -171,11 +177,6 @@ void ASCharacter::BeginAimDownSight()
 void ASCharacter::EndAimDownSight()
 {
 	bAimDownSight = false;
-}
-
-void ASCharacter::ControlPitch(float Val)
-{
-
 }
 
 void ASCharacter::HandleSpawnWeapons_Implementation(int weaponType)

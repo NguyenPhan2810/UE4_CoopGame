@@ -62,7 +62,7 @@ void ASGameMode::PrepareForNextwave()
 
 void ASGameMode::SpawnBotTimerElapsed()
 {
-	//UE_LOG(LogTemp, Warning, L"Number of bots: %d", numberOfBotsToSpawn);
+	UE_LOG(LogTemp, Warning, L"Number of bots: %d", numberOfBotsToSpawn);
 	if (numberOfBotsToSpawn <= 0)
 	{
 		EndWave();
