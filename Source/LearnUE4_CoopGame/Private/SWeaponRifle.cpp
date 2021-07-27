@@ -11,8 +11,9 @@
 
 ASWeaponRifle::ASWeaponRifle()
 : Super()
+, BaseDamage(20)
+, bulletSpread(2)
 {
-	BaseDamage = 20;
 	FireInterval = 1 / 10.0;
 	bEnableAutomaticFire = true;
 	HitScanTrace.replicationCounter = 0;
@@ -30,7 +31,10 @@ void ASWeaponRifle::Fire()
 		FRotator eyeRotation;
 		owner->GetActorEyesViewPoint(eyeLocation, eyeRotation);
 
-		FVector traceDirection = eyeRotation.Vector();
+
+		float randConeHalfAngleRad = FMath::DegreesToRadians(bulletSpread);
+		FVector traceDirection = FMath::VRandCone(eyeRotation.Vector(), randConeHalfAngleRad);
+
 		FVector traceBegin = eyeLocation;
 		FVector traceEnd = traceBegin + traceDirection * 10000;
 		FCollisionQueryParams queryParams;

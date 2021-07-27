@@ -42,11 +42,14 @@ public:
 	virtual void PlayImpactEffect(EPhysicalSurface surfaceType, FVector traceEnd);
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	FName MuzzleFlashSocketName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	float BaseDamage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Weapon, meta = (ClampMin = 0))
+	float bulletSpread;
 
 	UPROPERTY(ReplicatedUsing=OnRep_HitScanTrace)
 	FHitScanTrace HitScanTrace;
@@ -55,25 +58,25 @@ protected:
 	void OnRep_HitScanTrace();
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	UParticleSystem* ImpactEffectDefault;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	UParticleSystem* ImpactEffectVulnerable;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	UParticleSystem* SmokeTrailEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	FName SmokeTrailStartParamName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	FName SmokeTrailEndParamName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	UParticleSystem* MuzzleEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	class USoundBase* FireSound;
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
