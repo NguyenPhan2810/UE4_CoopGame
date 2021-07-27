@@ -140,6 +140,7 @@ void ASGameMode::GameOver()
 
 	SetWaveState(EWaveState::GameOver);
 
+
 	// @TODO: do something to end the match and show 'GameOver' to the player
 	UE_LOG(LogTemp, Log, L"Gameover");
 }
